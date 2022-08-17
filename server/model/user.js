@@ -24,6 +24,11 @@ const UserSchema = new Schema(
       },
       required: true,
     },
+    email: {
+      type: String,
+      trim: true,
+      unique: true
+    },
     level: { type: Number },
     department: { type: String },
     // token: { type: String},

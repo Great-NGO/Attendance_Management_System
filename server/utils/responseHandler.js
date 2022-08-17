@@ -22,7 +22,6 @@ const responseHandler = (res, message, statusCode, success=false, data={}) => {
 const handleSuccessResponse = (res, message, statusCode,  data={}, success=true, error=false, status="ok") => {
     res.status(statusCode).json({
         success,
-        error,
         message,
         status,
         data
@@ -30,11 +29,10 @@ const handleSuccessResponse = (res, message, statusCode,  data={}, success=true,
 }
 
 // Error Response Handler to handle all api responses to unsuccessful requests
-const handleErrorResponse = (res, message, statusCode, success=false, error=true, status="error") => {
+const handleErrorResponse = (res, message, statusCode, success=false, status="error") => {
     res.status(statusCode).json({
         success,
-        error,
-        message,
+        error:message,
         status
     })
 }
