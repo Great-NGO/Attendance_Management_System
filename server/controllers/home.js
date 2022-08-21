@@ -16,7 +16,7 @@ const getLecturers = async (req, res) => {
 
 const getStudents = async (req, res) => {
     
-    const students = await UserClass.getAllStudents()
+    const students = await AdminClass.getAllStudents()
     log("All Students -", students);
     handleSuccessResponse(res, "Students in the System", 200, {students, num: students.length})
 

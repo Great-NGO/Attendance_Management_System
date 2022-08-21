@@ -38,16 +38,22 @@ class UserClass{
         }
     }
 
-    async login(idNum, password, role){
+    async authenticateUser(idNum, password, role){
         const user = await User.findOne({idNum});
 
         if(user && user.validPassword(password)){
-            // return [true, user, `${{role}.toUpperCase()} login `]
-            return [true, user, `${role.toUpperCase()} login `]
+            // return [true, user, `${role.toUpperCase()} login `]
+            const returnedUser = user;
+            returnedUser.password = undefined; 
+            return [true, returnedUser, await this.generateAccessToken(idNum, returnedUser._id, role)]
         } else {
-            return [false, "Invalid ID or Password"]
+            return [false, "Invalid/Incorrect ID or Password"]
         }
 
+    }
+
+    async generateAccessToken(id, user_id, role) {
+        return jwt.sign({id, user_id, role}, process.env.JWT_SECRET, {expiresIn: '2h'})
     }
 
     getUserFullName(){
@@ -60,6 +66,59 @@ class UserClass{
             return [true, user]
         } else {
             return [false, "User with idNum doesn't exist"]
+        }
+    }
+
+    async update(fields) {
+        try {
+            const user = await this.getById(this.idNum);
+            if(user[0] !== false) {
+                const updatedUser = await User.findByIdAndUpdate(user[1]._id, fields)
+                if(updatedUser){
+                    return [ true, updatedUser, "Update successful"]
+                }  else{
+                    return [ false, "Failed to update user"]
+                }
+            } else{
+                return [false, "User does not exist"]
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+  
+    }
+
+    async delete() {
+        try {
+            const user = await this.getById(this.idNum);
+            console.log("USERRR ", user)
+            if(user[0] !== false) {
+                const deletedUser = await User.findByIdAndDelete(user[1]._id);
+                if(deletedUser) {
+                    return [ true, deletedUser, "User deleted successfully."]
+                } else{
+                    return [false, "Failed to delete user"]
+                }
+    
+            } else {
+                return [false, "User does not exist"]
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+
+    }
+
+    async getByDBId(id) {
+        try {
+            const user = await User.findById(id);
+            if(user) {
+                return [true, user]
+            } else {
+                return [false, "User does not exist"]
+            }
+        } catch (error) {
+            return [false, translateError(error)]
         }
     }
 
@@ -76,10 +135,6 @@ class UserClass{
         const students = await User.find({role: "student"});
         return students
     }
-   
-    // logout(){
-    //     return `${this.name} has logged out successfully`
-    // }
 
 }
 

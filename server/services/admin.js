@@ -24,12 +24,23 @@ class AdminClass extends UserClass{
 
     }
 
-    async deleteLecturer() {
+    // // Delete Lecturer method which is static because only an admin can delete an admins account
+    // static async deleteLecturer(idNum) {
 
-    }
+    // }
 
-    async deleteStudent(){
-
+    // Delete Student method which is static because only an admin can delete a students account
+    static async deleteStudent(id){
+        try {
+            const user = await User.findById(id)
+            if(user) {
+                return [ true, user]
+            } else {
+                return [false, "User does not exist."]
+            }
+        } catch (error) {
+            
+        }
     }
 
     static async getAllAdmins() {

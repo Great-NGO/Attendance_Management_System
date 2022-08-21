@@ -19,7 +19,7 @@ const studentSignup = async (req, res) => {
         // console.log("StudentExist 1 ", studentExist1)
         // console.log("StudentExist 2 ", studentExist2)
 
-        if(studentExist1[0] !== true && studentExist2[0]) {
+        if(studentExist1[0] !== true && studentExist2[0] !== true) {
     
             studentObject.getUserFullName();
             studentObject.login(idNum, password, role)

@@ -7,6 +7,7 @@ const AttendanceSchema = new Schema({
     studentName: { type: String, required: true},
     // studentMatricNo: { type: String, required: true, unique: true},
     studentMatricNo: { type: String, required: true},
+    studentPicture: { type: String}
 
 }, {timestamps: true});
 

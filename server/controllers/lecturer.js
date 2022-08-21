@@ -19,8 +19,6 @@ const lecturerSignup = async (req, res) => {
         // console.log("LEcturer exist 2", lecturerExist2)
 
         if(lecturerExist1[0] !== true && lecturerExist2[0] !== true) {
-            lecturerObject.getUserFullName();
-            lecturerObject.login(idNum, password, role)
             
             // Use the register() method from the new instantiated object to create a new lecturer.
             const newLecturer = await lecturerObject.register();

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { getDepartments, getLecturers, getStudents } = require('../controllers/home');
+const {  requireSignin } = require('../middleware/auth');
 const router = express.Router();
 // Auth Middleware
 // const { isAdminOrLecturer } = require("../middleware/auth");
@@ -9,7 +10,7 @@ const router = express.Router();
 
 router.get('/departments', getDepartments)
 
-router.get('/lecturers', getLecturers);
+router.get('/lecturers', requireSignin, getLecturers);
 
 router.get('/students', getStudents);
 
