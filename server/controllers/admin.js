@@ -97,7 +97,12 @@ const editLecturer = async(req, res) => {
 }
 
 const deleteStudent = async(req, res) => {
-    const { idNum } = req.params;
+    // const { idNum } = req.params;
+    const { idNum } = req.body;
+
+    if(!idNum) {
+        return handleErrorResponse(res, "Student Id number(idNum) required.", 400)
+    }
 
     const studentObject = new StudentClass(idNum)
     console.log("Stud object -", studentObject)
@@ -106,12 +111,17 @@ const deleteStudent = async(req, res) => {
     if(isdeleted[0] == true) {
         handleSuccessResponse(res, "Student deleted successfully", 200)
     } else {
-        handleErrorResponse(res, "Failed to delete student.", 400)
+        return handleErrorResponse(res, `Failed to delete student with Id '${idNum}'.`, 400)
     }
 }
 
 const deleteLecturer = async(req, res) => {
-    const { idNum } = req.params;
+    // const { idNum } = req.params;
+    const { idNum } = req.body;
+
+    if(!idNum) {
+        return handleErrorResponse(res, "Lecturer Id number(idNum) required.", 400)
+    }
 
     const lecturerObject = new LecturerClass(idNum)
     const isdeleted = await lecturerObject.delete();
@@ -119,7 +129,7 @@ const deleteLecturer = async(req, res) => {
     if(isdeleted[0] == true) {
         handleSuccessResponse(res, "Lecturer deleted successfully", 200)
     } else {
-        handleErrorResponse(res, "Failed to delete lecturer.", 400)
+        handleErrorResponse(res, `Failed to delete lecturer with Id '${idNum}'.`, 400)
     }
 }
 

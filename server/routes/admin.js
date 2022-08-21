@@ -19,12 +19,6 @@ router.post('/admin/addLecturer', requireSignin, isAdmin, createLecturerValidato
 // router.put('/admin/editStudent/:id', requireSignin, isAdmin, editStudentValidator, validate, editStudent )
 // router.put('/admin/editLecturer/:id', requireSignin, isAdmin, editLecturerValidator, validate, editLecturer )
 
-// router.delete('/admin/student/:id', requireSignin, isAdmin, deleteStudent)
-// router.delete('/admin/lecturer/:id', requireSignin, isAdmin, deleteLecturer)
-
-router.delete('/admin/student/:idNum', requireSignin, isAdmin, deleteStudent)
-router.delete('/admin/lecturer/:idNum', requireSignin, isAdmin, deleteLecturer)
-
 router.post('/admin/delete/student', requireSignin, isAdmin, deleteStudent)
 router.post('/admin/delete/lecturer', requireSignin, isAdmin, deleteLecturer)
 

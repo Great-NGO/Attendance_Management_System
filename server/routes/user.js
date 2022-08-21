@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 // Lecturer and Student have the same login route
-router.post('/login', lecturerOrStudentLogin)
+router.post('/login', lecturerOrStudentLogin)   //To use/test this route from the frontend or from rest client, call /api/v1/login
 
 router.get('/logout', logout)
 

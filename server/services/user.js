@@ -37,17 +37,27 @@ class UserClass{
             return [false, translateError(error)]
         }
     }
-
+ 
     async authenticateUser(idNum, password, role){
-        const user = await User.findOne({idNum});
+        const user = await User.findOne({idNum, role});
+        console.log("USer ", user)
 
-        if(user && user.validPassword(password)){
-            // return [true, user, `${role.toUpperCase()} login `]
-            const returnedUser = user;
-            returnedUser.password = undefined; 
-            return [true, returnedUser, await this.generateAccessToken(idNum, returnedUser._id, role)]
+        if(user){
+            // console.log(await user.validPassword(password))
+            if(await user.validPassword(password)){
+                const returnedUser = user;
+                returnedUser.password = undefined; 
+                return [true, returnedUser, await this.generateAccessToken(idNum, returnedUser._id, role)]
+            } else {
+                return [false, "Incorrect password"]
+            }
+            
         } else {
-            return [false, "Invalid/Incorrect ID or Password"]
+            if(role == "admin" || role == "lecturer" || role == "student") {
+                return [false, `${role.charAt(0).toUpperCase()+role.slice(1)} with Id number does not exist` ]
+            } else {
+                return [false, "User with Id and role does not exist."]
+            }
         }
 
     }

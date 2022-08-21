@@ -55,7 +55,6 @@ const logout = (req, res) => {
 }
 
 module.exports = {
-    // login
     lecturerOrStudentLogin,
     logout
 }

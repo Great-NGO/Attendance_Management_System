@@ -63,12 +63,12 @@ const sendLoginDetailsMail = async (email, fullName, idNum, password, role) => {
     console.log("The result from sending ", result);
 
     if (result.accepted) {
-      return [true, "User Welcome mail sent successfully."];
+      return [true, "Login Details mail sent to user successfully."];
     } else {
       return [
         false,
         result.code,
-        "Something went wrong in sending welcome mail to user.",
+        "Something went wrong in sending mail to user.",
       ];
     }
   } catch (error) {
@@ -76,7 +76,7 @@ const sendLoginDetailsMail = async (email, fullName, idNum, password, role) => {
     return [
       false,
       error,
-      "Something went wrong in sending Welcome mail to user.",
+      "Something went wrong in sending mail to user.",
     ];
   }
 };

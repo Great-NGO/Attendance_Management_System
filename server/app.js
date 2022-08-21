@@ -3,6 +3,7 @@ const { connectToDB } = require("./config/database");
 
 const express = require("express");
 const app = express();
+const path = require('path');
 const http = require("http");
 const PORT = process.env.PORT || process.env.SERVER_PORT;
 const cookieParser = require("cookie-parser");
@@ -50,9 +51,16 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Return 404 page for all invalid GET requests
+app.get('*', (req, res) => {
+  res.status(404).sendFile(path.resolve(__dirname, "../client", "404.html"));
+
+})
+
+// Return invalid response for every other type of requests
 app.use("*", (req, res) => {
     handleErrorResponse(res, "Route does not exist", 404)
-//   res.status(404).send({ error: true, message: "Route does not exist" , status: "error" });
+  // res.status(404).send({ error: true, message: "Route does not exist" , status: "error" });
 });
 
 const server = http.createServer(app);

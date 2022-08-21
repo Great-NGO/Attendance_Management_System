@@ -36,9 +36,12 @@ const CourseSchema = new Schema({
         // required: true,
         // unique: true,
       },
-      studentPicture: {     //For student image upload
+      studentPicture: [{     //For student image upload
         type: String
-      },
+      }],
+      studentLocation: [{ type: String}],
+      lecturerLocation: [{ type: String}],
+      isPresent: [ {type: Boolean} ],
       attendanceScore: {
         type: Number,
         // required: true,

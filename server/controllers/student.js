@@ -20,10 +20,7 @@ const studentSignup = async (req, res) => {
         // console.log("StudentExist 2 ", studentExist2)
 
         if(studentExist1[0] !== true && studentExist2[0] !== true) {
-    
-            studentObject.getUserFullName();
-            studentObject.login(idNum, password, role)
-            
+               
             // Use the register() method from the new instantiated object to create a new student collection (save to our database).
             const newStudent = await studentObject.register();
             success("Student saved in the database", newStudent)
@@ -45,10 +42,6 @@ const studentSignup = async (req, res) => {
     }
 }
 
-
-// const studentLogin = async(req, res) => {
-    
-// }
 
 module.exports = {
     studentSignup

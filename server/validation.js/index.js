@@ -6,7 +6,7 @@ const createStudentValidator =  [
 
         check("firstname", "Student's firstname is required").trim().notEmpty().isLength({ min: 3}),
         check("lastname", "Student's lastname is required").trim().notEmpty().isLength({min: 3}),    
-        check("email", "Student's Babcock email is required").notEmpty().isEmail(),
+        check("email", "Student's mail is required").notEmpty().isEmail(),
         check("idNum","Enter Student's identification number(matric number)").trim().notEmpty(),
         check("password", "Password is required.").trim().notEmpty(),
         check("password", "Password must not be less than 8 characters").isLength({min:8}),
@@ -19,7 +19,7 @@ const createStudentValidator =  [
 const editStudentValidator = [
     check("firstname", "Student's firstname is required").trim().notEmpty().isLength({ min: 3}),
     check("lastname", "Student's lastname is required").trim().notEmpty().isLength({min: 3}),    
-    check("email", "Student's Babcock email is required").notEmpty().isEmail(),
+    check("email", "Student's mail is required").notEmpty().isEmail(),
     check("idNum","Enter Student's identification number(matric number)").trim().notEmpty(),
     check("role", "Select 'student' as role").matches(/^student$/),
     check("department", "Enter Student's department").notEmpty(),
@@ -35,7 +35,9 @@ const createLecturerValidator =  [
         check("idNum","Enter Lecturer's identification number(Staff ID)").trim().notEmpty(),
         check("password", "Password is required.").trim().notEmpty(),
         check("password", "Password must not be less than 8 characters").isLength({min:8}),
-        check("role", "Select 'lecturer' as role").notEmpty().matches(/^lecturer$/)
+        check("role", "Select 'lecturer' as role").notEmpty().matches(/^lecturer$/),
+        // check("department", "Enter Student's department").notEmpty()
+
    
 ]
 
@@ -54,6 +56,8 @@ const createAdminValidator =  [
         check("firstname", "Admin's firstname is required").trim().notEmpty().isLength({ min: 3}),
         check("lastname", "Admin's lastname is required").trim().notEmpty().isLength({min: 3}),    
         check("email", "Admin's email is required").notEmpty().isEmail(),
+        check("password", "Password is required.").trim().notEmpty(),
+        check("password", "Password must not be less than 8 characters").isLength({min:8}),
         check("idNum","Enter Admin's identification number").trim().notEmpty(),
         check("role", "Select 'admin' as role").notEmpty().matches(/^admin$/)
         
