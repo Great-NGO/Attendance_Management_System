@@ -1,7 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { UserClass } = require('../services/User');
-const StudentClass = require('../services/student').StudentClass;
+const { UserClass } = require('../services/userService');
+const { StudentClass } = require('../services/studentService');
 const { log, logError, warn, info, success } = require('../utils/logging');
 const { handleErrorResponse, handleSuccessResponse } = require('../utils/responseHandler');
 
@@ -45,17 +45,12 @@ const lecturerOrStudentLogin = async(req, res) => {
     }   
 }
 
-const userById = async(req, res, next) => {
-    
-}
-
 const logout = (req, res) => {
     res.clearCookie('authToken');
     handleSuccessResponse(res, 'Logout successful', 200)
 }
 
 module.exports = {
-    // login
     lecturerOrStudentLogin,
     logout
 }

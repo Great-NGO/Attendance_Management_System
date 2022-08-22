@@ -1,9 +1,9 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { AdminClass } = require('../services/admin');
-const { LecturerClass } = require('../services/lecturer');
-const { StudentClass } = require('../services/student');
-const { UserClass } = require('../services/user');
+const { AdminClass } = require('../services/adminService');
+const { LecturerClass } = require('../services/lecturerService');
+const { StudentClass } = require('../services/studentService');
+const { UserClass } = require('../services/userService');
 const { log, logError, warn, info, success } = require('../utils/logging');
 const { handleErrorResponse, handleSuccessResponse } = require('../utils/responseHandler');
 
@@ -23,8 +23,8 @@ const adminSignup = async (req, res) => {
         let adminObject = new AdminClass(idNum, firstname, lastname, email, password, role)
         // log("Admin Object ", adminObject)
        
-        // use getById() and getByEmail() inherited from User class to check if any user (lecturer, student or admin) exists with that id
-        const adminExists = await adminObject.getById(idNum);
+        // use getByIdNum() and getByEmail() inherited from User class to check if any user (lecturer, student or admin) exists with that id
+        const adminExists = await adminObject.getByIdNum(idNum);
 
         if(adminExists[0] !== true) {
     
@@ -88,47 +88,49 @@ const adminLogin = async(req, res) => {
     }
 }
 
-const editStudent = async(req, res) => {
+const adminById = async(req, res) => {
+    const id= req.user.user_id;
 
-}
-
-const editLecturer = async(req, res) => {
-
-}
-
-const deleteStudent = async(req, res) => {
-    const { idNum } = req.params;
-
-    const studentObject = new StudentClass(idNum)
-    console.log("Stud object -", studentObject)
-    const isdeleted = await studentObject.delete();
-    console.log("IS DEleted", isdeleted)
-    if(isdeleted[0] == true) {
-        handleSuccessResponse(res, "Student deleted successfully", 200)
+    const admin = await new AdminClass().getById(id)
+    if(admin[0]==true) {
+        handleSuccessResponse(res, "Admin with Id found", 200, {admin:admin[1]})
     } else {
-        handleErrorResponse(res, "Failed to delete student.", 400)
+        handleErrorResponse(res, "Admin not found", 404)
     }
 }
 
-const deleteLecturer = async(req, res) => {
-    const { idNum } = req.params;
-
-    const lecturerObject = new LecturerClass(idNum)
-    const isdeleted = await lecturerObject.delete();
-
-    if(isdeleted[0] == true) {
-        handleSuccessResponse(res, "Lecturer deleted successfully", 200)
-    } else {
-        handleErrorResponse(res, "Failed to delete lecturer.", 400)
+const adminUpdatePassword = async (req, res) => {
+    const adminId = req.user.user_id;
+    const { newPassword } = req.body;
+    const updatedAdmin = await new AdminClass().updatePassword(adminId, newPassword, "admin");
+    if(updatedAdmin[0] == true) {
+        handleSuccessResponse(res, updatedAdmin[1], 200)
+    } else{
+        return handleErrorResponse(res, updatedAdmin[1], updatedAdmin[2])
     }
+
 }
+
+const deleteAdmin = async (req, res) => {
+    
+    const idNum = req.user.idNum;
+    const adminObject = new AdminClass(idNum);
+    const isdeleted = await adminObject.delete();
+    if(isdeleted[0]==true) {
+        handleSuccessResponse(res, "Admin Account deleted Successfully.", 200, {additionalInfo:"Clear cookie and token and redirect admin"})
+        return res.clearCookie('authToken')
+    } else {
+        return handleErrorResponse(res, "Failed to delete admin", 400)
+    }
+    
+}
+
 
 module.exports = {
     adminSignup,
     adminLogin,
-    editStudent,
-    editLecturer,
-    deleteStudent,
-    deleteLecturer
+    adminById,
+    adminUpdatePassword,
+    deleteAdmin
 
 }

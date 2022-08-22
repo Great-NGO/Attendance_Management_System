@@ -37,17 +37,27 @@ class UserClass{
             return [false, translateError(error)]
         }
     }
-
+ 
     async authenticateUser(idNum, password, role){
-        const user = await User.findOne({idNum});
+        const user = await User.findOne({idNum, role});
+        // console.log("USer ", user)
 
-        if(user && user.validPassword(password)){
-            // return [true, user, `${role.toUpperCase()} login `]
-            const returnedUser = user;
-            returnedUser.password = undefined; 
-            return [true, returnedUser, await this.generateAccessToken(idNum, returnedUser._id, role)]
+        if(user){
+            // console.log(await user.validPassword(password))
+            if(await user.validPassword(password)){
+                const returnedUser = user;
+                returnedUser.password = undefined; 
+                return [true, returnedUser, await this.generateAccessToken(idNum, returnedUser._id, role)]
+            } else {
+                return [false, "Incorrect password"]
+            }
+            
         } else {
-            return [false, "Invalid/Incorrect ID or Password"]
+            if(role == "admin" || role == "lecturer" || role == "student") {
+                return [false, `${role.charAt(0).toUpperCase()+role.slice(1)} with Id number does not exist` ]
+            } else {
+                return [false, "User with Id and role does not exist."]
+            }
         }
 
     }
@@ -60,7 +70,8 @@ class UserClass{
         return `${this.firstname} ${this.lastname}`
     }
 
-    async getById(idNum){
+    // Find a user by their id number (idNum)
+    async getByIdNum(idNum){
         const user = await User.findOne({idNum});
         if(user) {
             return [true, user]
@@ -71,9 +82,9 @@ class UserClass{
 
     async update(fields) {
         try {
-            const user = await this.getById(this.idNum);
+            const user = await this.getByIdNum(this.idNum);
             if(user[0] !== false) {
-                const updatedUser = await User.findByIdAndUpdate(user[1]._id, fields)
+                const updatedUser = await User.findByIdAndUpdate(user[1]._id, fields, {new: true})
                 if(updatedUser){
                     return [ true, updatedUser, "Update successful"]
                 }  else{
@@ -90,7 +101,7 @@ class UserClass{
 
     async delete() {
         try {
-            const user = await this.getById(this.idNum);
+            const user = await this.getByIdNum(this.idNum);
             console.log("USERRR ", user)
             if(user[0] !== false) {
                 const deletedUser = await User.findByIdAndDelete(user[1]._id);
@@ -109,7 +120,8 @@ class UserClass{
 
     }
 
-    async getByDBId(id) {
+    /** Find a User by their Id (Database id) */
+    async getById(id) {
         try {
             const user = await User.findById(id);
             if(user) {
@@ -131,9 +143,23 @@ class UserClass{
         }
     }
 
-    static async getAllStudents(){
-        const students = await User.find({role: "student"});
+    async getAllStudents(){
+        const students = await User.find({role: "student"}).select('firstname lastname idNum email role department level');
         return students
+    }
+
+    /** Update Password */
+    async updatePassword(id, password, role) {
+        try {
+            const userWithPassword = await User.findOneAndUpdate({_id:id, role}, {password: await encryptPassword(password) }, {new: true})
+            if(userWithPassword) {
+                return [true, userWithPassword, `${role.toUpperCase()} password updated successfully`]
+            } else {
+                return [ false, `FAILED TO UPDATE ${role.toUpperCase()} PASSWORD`, 400]
+            }
+        } catch (error) {
+            return [ false, translateError(error), 500]
+        }
     }
 
 }

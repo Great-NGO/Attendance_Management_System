@@ -1,12 +1,12 @@
 require('dotenv').config();
 const express = require('express');
-const { getDepartments, getLecturers, getStudents } = require('../controllers/home');
-const {  requireSignin } = require('../middleware/auth');
+const { getDepartments } = require('../controllers/homeController');
+const { getLecturers } = require('../controllers/lecturerController');
+const { getStudents, studentById, studentsByDepartment, studentsByLevel, studentsByLevelAndDept } = require('../controllers/studentController');
+
+const {  requireSignin, isAdminOrLecturer } = require('../middleware/auth');
 const router = express.Router();
 // Auth Middleware
-// const { isAdminOrLecturer } = require("../middleware/auth");
-
-// const { getAllStudents } = require('../controllers/admin');
 
 router.get('/departments', getDepartments)
 
@@ -14,10 +14,10 @@ router.get('/lecturers', requireSignin, getLecturers);
 
 router.get('/students', getStudents);
 
+router.get('/students/department/:department', requireSignin, isAdminOrLecturer,studentsByDepartment)
 
-// router.get('/getAllStudents', isAdminOrLecturer, getAllStudents)
-// router.get('/student/:studentId', getStudentById)
+router.get('/students/level/:level', requireSignin, isAdminOrLecturer, studentsByLevel)
 
-// router.post('/login', studentLecturerLogin)
+router.get('/students/:level/:department', requireSignin, isAdminOrLecturer, studentsByLevelAndDept)
 
 module.exports = router;
