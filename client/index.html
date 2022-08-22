@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: none;
+            box-sizing: border-box;
+        }
+        form {
+            padding: 1px;
+            border: 2px solid black;
+            width: max(20em, 40vw);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+        }
+        form > fieldset:nth-of-type(1) {
+            margin-top: 2em;
+        }
+        form > fieldset:last-of-type {
+            margin-block: 2em;
+        }
+        .role {
+            height: 6em;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin-top: 2em;
+        }
+        .student {
+            border: 1px solid gray;
+            width: 7em;
+            aspect-ratio: 1/1.2;
+            margin-inline: auto;
+            position: relative;
+        }
+        .student input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        .student:hover {
+            background-color: red;
+        }
+        .student input:checked ~ div {
+            background-color: red;
+        }
+        .student div {
+            width: 100%;
+            height: 100%;
+        }
+        .lecturer {
+            border: 1px solid gray;
+            padding: none;
+            width: 7em;
+            margin-inline: auto;
+            aspect-ratio: 1/1.2;
+            position: relative;
+        }
+        .lecturer:hover {
+            background-color: blue;
+        }
+        .lecturer input {
+            border: none;
+            margin: none;
+            padding: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        .lecturer input:checked ~ div {
+            background-color: blue;
+        }
+        .lecturer div {
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="post" onsubmit="">
+        <div class="role">
+                <div class="lecturer">
+                    <input type="radio" name="role" value="lecturer"><div></div>
+                </div>
+                <div class="student">
+                    <input type="radio" name="role" value="lecturer"><div></div>
+                </div>
+            </div>
+        <fieldset>
+            <legend>ID Number</legend>
+            <input type="text">
+        </fieldset>
+        <fieldset>
+            <legend>Password</legend>
+            <input type="text">
+        </fieldset>
+    </form>
+</body>
+</html>

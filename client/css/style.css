@@ -1,0 +1,397 @@
+*, ::before, ::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+html {
+    width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #e0e0e0;
+}
+body {
+    background-color: #e0e0e0;
+    --primary-color: #4672c4;
+    --secondary-color: #ffbd7d;
+    font-family: sans-serif;
+}
+html.dark-theme {
+    filter: invert(100%);
+}
+ html.dark-theme *::selection {
+    color: white;
+    background-color: orange;
+} 
+
+main {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    width: 100vw;
+    padding-left:3em;
+    padding-right: 3em;
+}
+#student-course-view nav {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2em;
+}
+.purple {
+    color: var(--primary-color);
+}
+
+#student-course-view #views {
+    margin-inline: auto;
+    list-style-type: none;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    width: auto;
+    font-weight: 600;
+}
+#student-course-view li {
+    height: 100%;
+}
+#student-course-view li button {
+    height: 100%;
+    padding-block: 2em;   
+    width: 8em; 
+    text-transform: capitalize;
+    border: none;
+    border-radius: 0px;
+    background: linear-gradient(145deg, #f0f0f0, #cacaca);
+    box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+    position: relative;
+}
+
+#student-course-view li button:focus {
+    outline: 1px solid black;
+    z-index: 9999;
+}
+#student-course-view li button:hover {
+    background: linear-gradient(145deg, #cacaca, #f0f0f0);
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
+}
+#student-course-view li .highlighted::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background-image: linear-gradient(to top, #ffffff, transparent);
+    height: 3px;
+}
+html.dark-theme #student-course-view li .highlighted::after {
+    filter: invert(100%);
+}
+
+.dark-mode-toggle {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    z-index: 9999;
+    background: none;
+    border: none;
+}
+
+.dark-mode-toggle:hover {
+    cursor: pointer;
+}
+
+#student-course-view #title-wrapper {
+    height: 13em;
+    border-radius: 50px;
+    width: 100%;
+    background-image: linear-gradient(225deg, var(--primary-color), var(--secondary-color));
+    padding: 1px;
+}
+
+#student-course-view #title-card {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: #e0e0e0;
+    box-shadow: inset 20px 20px 60px #bebebe,
+                inset -20px -20px 60px #ffffff;
+    display: flex;
+    flex-flow: column;
+    justify-content: end;
+    padding-bottom: 1.5em;
+    padding-left: 1.7em;
+}
+#student-course-view #title-card > p{
+    font-weight: 600;
+    width: 90%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#student-course-view #title-card > #course-title {
+    font-size: 2.5em;
+    /* font-size: calc(4vw + 0.5rem); */
+}
+#student-course-view #title-card > #course-code {
+    font-size: 1.5em;
+    /* font-size: calc(2vw + 0.5rem); */
+}
+#student-course-view #title-card > #lecturer {
+    font-size: 1em;
+    /* font-size: calc(1vw + 0.5rem); */
+}
+#student-course-view #attendance-view {
+    width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    z-index: 3;
+}
+#student-course-view #attendance-view a{
+    text-decoration: none;
+    margin-block: 5em;
+}
+
+
+#student-course-view #attendance-view a button {
+    position: relative;
+    width: 25vw;
+    height: 25vw;
+    min-width: 9em;
+    min-height: 9em;
+    border-radius: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-evenly; 
+    box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+    border: none;
+    z-index: 2;
+}
+#student-course-view #attendance-view a button:hover{
+    border: 1px solid white;
+    scale: 1.1;
+    cursor: pointer;
+}
+html.dark-theme #student-course-view #attendance-view button:hover {
+    border: 1px solid black;
+}
+
+#student-course-view #attendance-view button::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-image: linear-gradient(225deg, var(--primary-color), var(--secondary-color));
+    z-index: 2;
+}
+#student-course-view #attendance-view button:hover::after {
+box-shadow: 0px 0px 50px var(--primary-color),
+-20px 20px 20px var(--secondary-color);
+}
+html.dark-theme #student-course-view #attendance-view button::after {
+    filter: invert(100%);
+}
+html.dark-theme #student-course-view #attendance-view button:hover::after {
+    box-shadow: 0px 0px 50px var(--primary-color),
+-10px 10px 20px var(--secondary-color);
+}
+
+
+#student-course-view button img {
+    width: 50%;
+    margin-top: 10%;
+    z-index: 3;
+}
+#student-course-view button p {
+    text-transform: uppercase;
+    color: black;
+    margin-bottom: 10%;
+    font-weight: bolder;
+    font-size: calc(1vw + 1em);
+    z-index: 3;
+}
+#student-course-view #attendance-view #wrapper {
+    width: 100%;
+    border-radius: 34px;
+    background-image: linear-gradient(225deg, var(--primary-color), var(--secondary-color));
+    padding: 1px;
+    margin-block: 3em;
+    box-shadow:  16px 16px 32px #bebebe,
+    -16px -16px 32px #ffffff
+}
+#student-course-view #attendance-view > #wrapper > section{
+    width: 100%;
+    height: 100%;
+    border-radius: 45px;
+    background: linear-gradient(145deg, #f0f0f0, #cacaca);
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 34px;
+    padding-inline: 2em;
+}
+#student-course-view #attendance-view > #wrapper > section > p {
+    text-transform: capitalize;
+    margin-top: 1.5em;
+    font-size: calc(1vw + 1rem);
+    font-weight: 600;
+}
+#student-course-view #attendance-view > #wrapper > section > #overview {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+#student-course-view #attendance-view > #wrapper > section > #overview div {
+    border-radius: 30px;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding-inline: 2em;
+    padding-block: 1em;
+    gap: 3px;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+#student-course-view #attendance-view > #wrapper > section > #overview div h1 {
+    font-size: 2.5em;
+}
+
+@media only screen and (max-width: 450px) {    
+    main {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
+@media only screen and (max-width: 376px) {    
+    #title-card {
+        width: 90%;
+        aspect-ratio: 1/10;
+    }
+}
+html::-webkit-scrollbar {
+    width: 1em;
+}
+html::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 100vw;
+    margin-block: .5em;
+}
+html::-webkit-scrollbar-thumb {
+    background-color:hsl(0, 0%, 70%);
+    border: 3px solid #e0e0e0;
+    border-radius: 100vw;
+}
+html::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(0, 0%, 50%);
+}
+html.dark-theme::-webkit-scrollbar {
+    background: #1f1f1f;
+}
+html.dark-theme::-webkit-scrollbar-track {
+    background: #1f1f1f;
+}
+html.dark-theme::-webkit-scrollbar-thumb {
+    background-color:hsl(0, 0%, 30%);
+    border: 3px solid #1f1f1f;
+    border-radius: 100vw;
+}
+html.dark-theme::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(0, 0%, 50%);
+}
+
+#student-course-view #overview-wrapper{
+    width: 95%;
+    margin-block: 3vw;
+    background: #e0e0e0;
+    box-shadow: inset 20px 20px 60px #bebebe,
+                inset -20px -20px 60px #ffffff;
+    overflow: auto;
+}
+#student-course-view #overview-wrapper #detailed-overview {
+    border-collapse: collapse;
+}
+#student-course-view #overview-wrapper #detailed-overview caption {
+    caption-side: top;
+    text-align: left;
+}
+
+#student-course-view .key .red {
+    position:relative;
+    width: fit-content;
+    padding-right: 1em;
+    border-right: 2em solid #F72119; 
+    display: inline-block;
+    text-transform: capitalize;
+    font-weight: 600;
+  }
+  #student-course-view .key .green {
+    text-transform: capitalize;
+    position:relative;
+    width: fit-content;
+    padding-right: 1em;
+    border-right: 2em solid #1fff0f; 
+    margin-right: 1em;
+    margin-block: 0.4em;
+    display: inline-block;
+    font-weight: 600;
+  }
+html.dark-theme #student-course-view .key .green {
+  border-right: 2em solid #E000F0;
+}
+html.dark-theme #student-course-view .key .red {
+    border-right: 2em solid #08DEE6;
+}
+#student-course-view #overview-wrapper #detailed-overview tr {
+    border: 1px solid black;
+}
+
+#student-course-view #overview-wrapper #detailed-overview th {
+    padding: 10px;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+#student-course-view #overview-wrapper #detailed-overview tbody tr:last-of-type th{
+    border-bottom: none;
+}
+
+#student-course-view #overview-wrapper #detailed-overview td {
+    border: 1px solid black;
+}
+#student-course-view #overview-wrapper #detailed-overview .absent {
+    background-color: #F72119;
+}
+html.dark-theme #student-course-view #overview-wrapper #detailed-overview .absent {
+    background-color: #08DEE6;
+}
+#student-course-view #overview-wrapper #detailed-overview .present {
+    background-color: #1fff0f;
+}
+html.dark-theme #student-course-view #overview-wrapper #detailed-overview .present {
+    background-color: #E000F0;
+}
+#student-course-view #overview-wrapper #detailed-overview tfoot{
+    font-size: small;
+    font-weight: 900;
+}
+#student-course-view #overview-wrapper #detailed-overview tfoot td{
+    padding-inline: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+

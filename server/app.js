@@ -57,6 +57,8 @@ app.use("*", (req, res) => {
 
 const server = http.createServer(app);
 
+console.log(process.env.SERVER_PORT)
+
 connectToDB()
   .then(() => {
     // Starting server after database connection
