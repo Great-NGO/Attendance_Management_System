@@ -11,9 +11,9 @@ const requireSignin = async(req, res, next) => {
         return handleErrorResponse(res, "Cannot access this route because a token is required for authentication.", 403);
     } else {
         try {
-            console.log("AAAAA");
+         
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("DECODED - ", decoded)            
+            // console.log("DECODED - ", decoded)            
     
             const { id, user_id, role, exp } = decoded;
     
@@ -21,6 +21,7 @@ const requireSignin = async(req, res, next) => {
     
             const user = { idNum:id, role, user_id}
             req.user = user;
+            console.log("req user ", req.user)
             return next();
     
         } catch(err) {
@@ -37,16 +38,8 @@ const requireSignin = async(req, res, next) => {
         }
     }
 
-    // return next();
 }
 
-const verifyStudent = async (req, res, next) => {
-
-}
-
-const verifyLecturer = async (req, res, next) => {
-
-}
 
 const isAdmin = async(req, res, next) => {
     if(req.user.role !== "admin") {
@@ -72,11 +65,12 @@ const isStudent = async(req, res, next) => {
     }
 }
 
-const verifyAdminOrLecturer = async(req, res, next) => {
-    if(req.user.role !== "admin" || req.user.role !== "lecturer") {
-        return handleErrorResponse(res, "Can not access this route. Not an admin or a lecturer.", 403)
-    } else {
+const isAdminOrLecturer = async(req, res, next) => {
+
+    if(req.user.role == "admin" || req.user.role == "lecturer") {
         return next()
+    } else {
+        return handleErrorResponse(res, "Can not access this route. Not an admin or a lecturer.", 403)
     }
 }
 
@@ -85,5 +79,5 @@ module.exports = {
     isLecturer,
     isStudent,
     requireSignin,
-    verifyAdminOrLecturer
+    isAdminOrLecturer
 }

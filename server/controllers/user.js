@@ -1,7 +1,7 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { UserClass } = require('../services/User');
-const StudentClass = require('../services/student').StudentClass;
+const { UserClass } = require('../services/userService');
+const { StudentClass } = require('../services/studentService');
 const { log, logError, warn, info, success } = require('../utils/logging');
 const { handleErrorResponse, handleSuccessResponse } = require('../utils/responseHandler');
 
@@ -43,10 +43,6 @@ const lecturerOrStudentLogin = async(req, res) => {
         logError(error)
         handleErrorResponse(res, `Internal Server Error. Something went wrong, try again later`, 500)
     }   
-}
-
-const userById = async(req, res, next) => {
-    
 }
 
 const logout = (req, res) => {
