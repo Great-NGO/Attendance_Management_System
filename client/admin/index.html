@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Login Panel</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h2>Admin login</h2>
+    
+    <div class="container">
+        <div class="myform">
+            <form id="form" method="post" novalidate>
+            <h2>ADMIN LOGIN</h2>
+            <small id="error" aria-live="polite"></small>
+            <input id="idNum" type="text" placeholder="ID Number" name="idNum">
+            <input id="password" type="password" placeholder="Password" name="password">
+            <button type="submit">LOGIN</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
 </body>
 </html>
