@@ -25,7 +25,7 @@ app.use(cors(corsOption));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // To allow Cookies
-app.use(cookieParser());
+app.use(cookieParser())
 // For static rendering
 app.use(express.static('client'))
 

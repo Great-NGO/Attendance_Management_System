@@ -52,7 +52,8 @@ const getLecturerCourses = async (req, res) => {
  
     // const lecturerId = req.user.user_id;
     let lecturerId;
-    req.role == "lecturer" ? lecturerId = req.user.user_id : lecturerId = req.params.lecturerId
+    req.user.role == "lecturer" ? lecturerId = req.user.user_id : lecturerId = req.params.lecturerId
+    // req.role == "lecturer" ? lecturerId = req.user.user_id : lecturerId = req.params.lecturerId
     // console.log("Lecturer id ", lecturerId);
 
     const courseObject = new CourseClass()
