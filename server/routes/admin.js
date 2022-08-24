@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const { lecturerSignup, deleteLecturer, editLecturer } = require('../controllers/lecturerController');
 const { studentSignup, deleteStudent, editStudent } = require('../controllers/studentController');
-const { adminSignup, adminLogin, deleteAdmin, adminUpdatePassword, adminById } = require('../controllers/adminController')
-const { createStudentValidator, validate, createLecturerValidator, createAdminValidator, editStudentValidator, editLecturerValidator, updatePasswordValidator } = require('../validation.js');
+const { adminSignup, adminLogin, deleteAdmin, adminUpdatePassword, adminById, adminForgotPassword, adminResetPassword } = require('../controllers/adminController')
+const { createStudentValidator, validate, createLecturerValidator, createAdminValidator, editStudentValidator, editLecturerValidator, updatePasswordValidator, resetPasswordValidator, adminForgotPasswordValidator } = require('../validation.js');
 const { requireSignin, isAdmin } = require('../middleware/auth');
 const router = express.Router();
 
@@ -18,15 +18,20 @@ router.post('/admin/addLecturer', requireSignin, isAdmin, createLecturerValidato
 
 // router.post('/admin/addCourse', isAdmin, addCoursesValidator, validate, createCourse )
 
-router.put('/admin/editStudent/:id', requireSignin, isAdmin, editStudentValidator, validate, editStudent )
-router.put('/admin/editLecturer/:id', requireSignin, isAdmin, editLecturerValidator, validate, editLecturer )
+// Edit Student Route. Edited info - firstname, lastname, department and level.
+router.put('/admin/editStudent/:studentId', requireSignin, isAdmin, editStudentValidator, validate, editStudent )
+// Edit Lecturer Route. Edited info - firstname, lastname and/or department.
+router.put('/admin/editLecturer/:lecturerId', requireSignin, isAdmin, editLecturerValidator, validate, editLecturer )
 
+// Delete Student
 router.post('/admin/delete/student', requireSignin, isAdmin, deleteStudent)
+// Delete Lecturer
 router.post('/admin/delete/lecturer', requireSignin, isAdmin, deleteLecturer)
 
-// router.post('/admin/forgotPassword', forgotPasswordValidator, adminForgotPassword)
-
-// router.put('/admin/reset/password/:id', resetPasswordValidator, adminResetPassword)
+// Admin Forgot password
+router.post('/admin/forgotPassword', adminForgotPasswordValidator, validate, adminForgotPassword)
+// Admin reset password
+router.put('/admin/reset/password/:id', resetPasswordValidator, validate, adminResetPassword)
 
 // Only to create default admin
 router.post('/auth/admin/register', createAdminValidator, validate, adminSignup)    
