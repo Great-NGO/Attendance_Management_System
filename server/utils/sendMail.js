@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 const { logError } = require("./logging");
 
@@ -21,11 +21,14 @@ const sendLoginDetailsMail = async (email, fullName, idNum, password, role) => {
       },
     });
 
-    const url = "http://localhost:4000/login"
-    // const url2 = 'https://localhost:4000/login'
+    if (process.env.NODE_ENV === "production") {
+      url = "https://buattendancemanagementsystem.herokuapp.com/login";
+    } else {
+      url = `http://localhost:4000/login`;
+    }
 
     let mail;
-    if (role == 'student') {
+    if (role == "student") {
       mail = {
         from: nodeMailerEmail,
         to: email,
@@ -44,7 +47,6 @@ const sendLoginDetailsMail = async (email, fullName, idNum, password, role) => {
           
               `,
       };
-
     } else {
       mail = {
         from: nodeMailerEmail,
@@ -79,21 +81,22 @@ const sendLoginDetailsMail = async (email, fullName, idNum, password, role) => {
     }
   } catch (error) {
     logError(error);
-    return [
-      false,
-      error,
-      "Something went wrong in sending mail to user.",
-    ];
+    return [false, error, "Something went wrong in sending mail to user."];
   }
 };
 
 const sendResetPwdMail = async (email, fullName, id, role) => {
   try {
-    let url = `http://localhost:4000/resetPassword/${id}`;
-    let url2 = `https://bu-attendance-management-system.herokuapp.com/resetPassword/${id}`;
-    let url3 = `http://localhost:4000/admin/resetPassword/${id}`;
-    let url4 = `https://bu-attendance-management-system.herokuapp.com/admin/resetPassword/${id}`;
+    let url1;
+    let url2;
 
+    if (process.env.NODE_ENV === "production") {
+      url1 = `https://buattendancemanagementsystem.herokuapp.com/resetPassword/${id}`;
+      url2 = `https://buattendancemanagementsystem.herokuapp.com/admin/resetPassword/${id}`;
+    } else {
+      url1 = `http://localhost:4000/resetPassword/${id}`;
+      url2 = `http://localhost:4000/admin/resetPassword/${id}`;
+    }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -116,7 +119,7 @@ const sendResetPwdMail = async (email, fullName, id, role) => {
              Dear Student <strong>${fullName}</strong>,
              <p>Having an issue with remembering your password? Well don't worry! </p>
              <p>Click the link below to complete your password reset process </p>
-             <br> <a href="${url2}">Click here to reset your password</a>
+             <br> <a href="${url1}">Click here to reset your password</a>
           `,
       };
     } else if (role === "lecturer") {
@@ -128,7 +131,7 @@ const sendResetPwdMail = async (email, fullName, id, role) => {
              Dear Lecturer <strong>${fullName}</strong>,
              <p>Having an issue with remembering your password? Well don't worry! </p>
              <p>Click the link below to complete your password reset process </p>
-             <br> <a href="${url2}">Click here to reset your password</a>
+             <br> <a href="${url1}">Click here to reset your password</a>
           `,
       };
     } else {
@@ -139,11 +142,10 @@ const sendResetPwdMail = async (email, fullName, id, role) => {
         html: `
              Dear Admin <strong>${fullName}</strong>,
              <p>Click the link below to complete your password reset process </p>
-             <br> <a href="${url4}">Click here to reset your password</a>
+             <br> <a href="${url2}">Click here to reset your password</a>
           `,
       };
     }
-
 
     const result = await transporter.sendMail(mail);
     console.log("helo");
@@ -166,6 +168,5 @@ const sendResetPwdMail = async (email, fullName, id, role) => {
     ];
   }
 };
-
 
 module.exports = { sendLoginDetailsMail, sendResetPwdMail };

@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const { getDepartments } = require('../controllers/homeController');
-const { lecturerOrStudentLogin, logout } = require('../controllers/user');
+const { lecturerOrStudentLogin, logout, forgotPassword, resetPassword } = require('../controllers/userController');
 const {  requireSignin } = require('../middleware/auth');
+const { forgotPasswordValidator, validate, resetPasswordValidator } = require('../validation.js');
 const router = express.Router();
 // Auth Middleware
 // const { isAdminOrLecturer } = require("../middleware/auth");
@@ -13,8 +14,8 @@ router.post('/login', lecturerOrStudentLogin)   //To use/test this route from th
 
 router.get('/logout', logout)
 
-// router.post('/forgotPassword', forgotPasswordValidator, forgotPassword)
+router.post('/forgotPassword', forgotPasswordValidator, validate, forgotPassword)
 
-// router.put('/reset/password/:id', resetPasswordValidator, resetPassword)
+router.put('/reset/password/:id', resetPasswordValidator, validate, resetPassword)
 
 module.exports = router;
