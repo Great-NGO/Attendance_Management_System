@@ -27,7 +27,8 @@ const UserSchema = new Schema(
     email: {
       type: String,
       trim: true,
-      unique: true
+      unique: true,
+      required: true
     },
     level: { type: Number },
     department: { type: String },

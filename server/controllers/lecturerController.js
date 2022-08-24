@@ -80,7 +80,7 @@ const editLecturer = async(req, res) => {
     const lecturer = await lecturerInstance1.getById(lecturerId);
     if(lecturer[0] == true) {
         const lecturerInstance2 = new LecturerClass(lecturer[1].idNum)
-        const fields = {firstname, lastname, level, department}
+        const fields = {firstname, lastname, department}
         const updatedLecturer = await lecturerInstance2.update(fields);
         if(updatedLecturer[0] == true) {
             handleSuccessResponse(res, updatedLecturer[2], 200, {lecturer:updatedLecturer[1]})
