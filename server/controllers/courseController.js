@@ -2,6 +2,7 @@ require('dotenv').config();
 const { AdminClass } = require('../services/adminService');
 const { CourseClass } = require("../services/courseService");
 const { LecturerClass } = require('../services/lecturerService');
+const { StudentClass } = require('../services/studentService');
 const { UserClass } = require('../services/userService');
 const { handleErrorResponse, handleSuccessResponse } = require('../utils/responseHandler');
 
@@ -49,11 +50,11 @@ const createCourse = async (req, res) => {
 }
 
 const getLecturerCourses = async (req, res) => {
- 
+
     // const lecturerId = req.user.user_id;
     let lecturerId;
-    req.role == "lecturer" ? lecturerId = req.user.user_id : lecturerId = req.params.lecturerId
-    // console.log("Lecturer id ", lecturerId);
+    req.user.role == "lecturer" ? lecturerId = req.user.user_id : lecturerId = req.params.lecturerId
+    console.log("Lecturer id ", lecturerId);
 
     const courseObject = new CourseClass()
     const lecturerCourses = await courseObject.getCoursesByLecturer(lecturerId);
@@ -66,11 +67,11 @@ const getLecturerCourses = async (req, res) => {
 
 }
 
-const getAllCourses = async(req, res) => {
+const getAllCourses = async (req, res) => {
     // Instantiating the AdminClass() because the getAllCourses() method which queries our database is defined on that class
     const courses = await new AdminClass().getAllCourses()
     console.log("COurses -", courses);
-    handleSuccessResponse(res, "All Courses in the System", 200, {courses})
+    handleSuccessResponse(res, "All Courses in the System", 200, { courses })
 }
 
 // const coursesByLecturer = async (req, res) => {
@@ -79,29 +80,73 @@ const getAllCourses = async(req, res) => {
 
 // }
 
+// Edit Course details
 const editCourse = async (req, res) => {
 
 }
 
+// To delete a course
 const deleteCourse = async (req, res) => {
 
 }
 
+// To add a student to a course
 const addStudentToCourse = async (req, res) => {
-    
-    const { studentId, studentName, studentMatricNo, studentLevel } = req.body;
 
-    let takenBy = [];
+    try {
+        const { courseCode, studentMatricNo } = req.body;
 
-    const obj = {
-        studentId,
-        studentName,
-        studentMatricNo,
-        studentLevel
+        const courseObject = new CourseClass()  //New Course Class instance
+        const studentExists = await new StudentClass().getStudentByIdNum(studentMatricNo);
+        const courseExists = await courseObject.getByCourseCode(courseCode);
+
+        if (courseExists[0] == true && studentExists[0] == true) {
+
+            const { takenBy } = courseExists[1];
+            const studentIndex = takenBy.findIndex((student) => student.studentMatricNo == studentMatricNo)
+            console.log("The index ", studentIndex);
+
+            // If Student has already been added
+            if (studentIndex > -1) {
+                return handleErrorResponse(res, "Student has already been added to course.", 400)
+            } else {
+
+                const studentObject = {
+                    studentId: studentExists[1]._id,
+                    studentName: `${studentExists[1].firstname} ${studentExists[1].lastname}`,
+                    studentMatricNo,
+                    studentLevel: studentExists[1].level
+                }
+
+                let takenByArr = takenBy.concat(studentObject);         //Concat to return a new array containing the joined array/value
+                const fields = {
+                    takenBy: takenByArr
+                }
+
+                const addStudent = await courseObject.update(courseExists[1]._id, fields)
+                // console.log("Add student ", addStudent)
+
+                if (addStudent[0] == true) {
+                    handleSuccessResponse(res, "Student added to course successfully.", 200, { course: addStudent[1] })
+
+                } else {
+                    handleErrorResponse(res, "Failed to add student to course", 400)
+                }
+            }
+
+        } else {
+            return handleErrorResponse(res, "Student with matric number/ Course code does not exist", 404)
+        }
+    } catch (error) {
+        return handleErrorResponse(res, "Something went wrong - Internal server error. Please try again later", 500)
+
     }
 
-    
+}
 
+const setAttendanceTimeline = async(req, res) => {
+    const { courseId } = req.params;
+    
 }
 
 module.exports = {
@@ -110,5 +155,6 @@ module.exports = {
     deleteCourse,
     getAllCourses,
     getLecturerCourses,
-    addStudentToCourse
+    addStudentToCourse,
+    setAttendanceTimeline
 }

@@ -156,6 +156,12 @@ const editCourseValidator = [
     check("courseDepartment", "Enter Course Department").trim().notEmpty()
 ]
 
+// Add Student to Course Validation rule
+const addStudentToCourseValidator = [
+    check("courseCode", "Enter the course code of course you want to add student to.").trim().notEmpty(),
+    check("studentMatricNo", "Enter student's matric number").trim().notEmpty()
+]
+
 
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -184,5 +190,6 @@ module.exports = {
     resetPasswordValidator,
     addCourseValidator,
     editCourseValidator,
+    addStudentToCourseValidator,
     validate
 }

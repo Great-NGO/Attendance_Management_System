@@ -43,7 +43,8 @@ const CourseSchema = new Schema({
       },
       studentLevel : {
         type: Number
-      }
+      },
+      _id: false
     },
   ],
   //   attendance: [{type: ObjectId, ref: "attendance"}],
@@ -73,6 +74,7 @@ const CourseSchema = new Schema({
         default: 0,
         min: [0, "Attendance Score can not be less than 0"],
       },
+      _id: false
     },
   ],
   canSubmitAttendance: {    //Property to allow students to be able to submit attendance or not
