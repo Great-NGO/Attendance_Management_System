@@ -1,10 +1,8 @@
-require('dotenv')
 // Database Configuration files
 const mongoose = require("mongoose");
 const { log, logError } = require("../utils/logging");
 // const { MONGODB_URI } = process.env;
 
-const MONGODB_URI = process.env.MONGODB_URI
 //To disable buffering
 // mongoose.set("bufferCommands", false);
 
