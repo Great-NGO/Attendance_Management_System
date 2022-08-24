@@ -1,3 +1,4 @@
+const Course = require("../model/course");
 const User = require("../model/user");
 const { translateError } = require("../utils/mongo_helper");
 const { UserClass } = require("./userService");
@@ -22,6 +23,12 @@ class AdminClass extends UserClass{
 
     async assignCourseToLecturer(){
 
+    }
+
+    // Admin can view all courses
+    async getAllCourses(){
+        const courses = await Course.find({});
+        return courses
     }
 
     static async getAllAdmins() {

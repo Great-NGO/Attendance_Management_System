@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const { getLecturerCourses, addStudentToCourse } = require('../controllers/courseController');
 const { getLecturerById, lecturerUpdatePassword } = require('../controllers/lecturerController');
 const { requireSignin, isLecturer } = require('../middleware/auth');
 const { updatePasswordValidator, validate } = require('../validation.js');
@@ -8,7 +9,9 @@ const router = express.Router();
 
 router.get('/lecturer/:lecturerId', requireSignin, getLecturerById)
 
-// router.post('/lecturer/addStudentToCourse', isLecturer, addStudentToCourse )
+router.get('/lecturer/get/courses', requireSignin, isLecturer, getLecturerCourses)
+
+router.post('/lecturer/addStudentToCourse', requireSignin, isLecturer, addStudentToCourse )
 
 router.put('/lecturer/editPassword/:lecturerId', requireSignin, isLecturer, updatePasswordValidator, validate, lecturerUpdatePassword )
 

@@ -137,6 +137,25 @@ const resetPasswordValidator = [
 
 ]
 
+// Add Course Validation rule
+const addCourseValidator = [
+
+    check("lecturer", "Enter Course lecturer").trim().notEmpty(),
+    check("staffId", "Enter lecturer's staff Id").trim().notEmpty(),
+    check("courseTitle", "Enter Course title").trim().notEmpty(),
+    check("courseCode", "Enter Course Code").trim().notEmpty(),
+    check("courseDepartment", "Enter Course Department").trim().notEmpty()
+]
+
+// Edit Course Validation rule
+const editCourseValidator = [
+
+    check("lecturer", "Enter Course lecturer").trim().notEmpty(),
+    check("staffId", "Enter lecturer's staff Id").trim().notEmpty(),
+    check("courseTitle", "Enter Course title").trim().notEmpty(),
+    check("courseDepartment", "Enter Course Department").trim().notEmpty()
+]
+
 
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -163,5 +182,7 @@ module.exports = {
     forgotPasswordValidator,
     adminForgotPasswordValidator,
     resetPasswordValidator,
+    addCourseValidator,
+    editCourseValidator,
     validate
 }

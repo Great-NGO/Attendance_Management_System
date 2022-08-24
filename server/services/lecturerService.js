@@ -101,7 +101,7 @@ class LecturerClass extends UserClass {
     }
 
 
-    static async getLecturerById(idNum) {
+    static async getLecturerByStaffId(idNum) {
         let lecturer = await User.findOne({ idNum, role: "lecturer" });
         if (lecturer) {
             return [true, lecturer]

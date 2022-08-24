@@ -3,8 +3,9 @@ const express = require('express');
 const { lecturerSignup, deleteLecturer, editLecturer } = require('../controllers/lecturerController');
 const { studentSignup, deleteStudent, editStudent } = require('../controllers/studentController');
 const { adminSignup, adminLogin, deleteAdmin, adminUpdatePassword, adminById, adminForgotPassword, adminResetPassword } = require('../controllers/adminController')
-const { createStudentValidator, validate, createLecturerValidator, createAdminValidator, editStudentValidator, editLecturerValidator, updatePasswordValidator, resetPasswordValidator, adminForgotPasswordValidator } = require('../validation.js');
+const { createStudentValidator, validate, createLecturerValidator, createAdminValidator, editStudentValidator, editLecturerValidator, updatePasswordValidator, resetPasswordValidator, adminForgotPasswordValidator, addCourseValidator, editCourseValidator } = require('../validation.js');
 const { requireSignin, isAdmin } = require('../middleware/auth');
+const { createCourse, getLecturerCourses, editCourse, deleteCourse, getAllCourses } = require('../controllers/courseController');
 const router = express.Router();
 
 // To View Admins detail (Get Admin's info)
@@ -16,7 +17,20 @@ router.post('/admin/addStudent', requireSignin, isAdmin, createStudentValidator,
 
 router.post('/admin/addLecturer', requireSignin, isAdmin, createLecturerValidator, validate, lecturerSignup )
 
-// router.post('/admin/addCourse', isAdmin, addCoursesValidator, validate, createCourse )
+// Get All Courses
+router.get('/admin/courses', requireSignin, isAdmin, getAllCourses)
+
+// Get Courses taught by a particular lecturer
+router.get('/admin/courses/:lecturerId', requireSignin, isAdmin, getLecturerCourses)    //// router.get('/admin/courses/:lecturerId', requireSignin, isAdmin, coursesByLecturer)
+
+// To Create an Add courses to the system
+router.post('/admin/addCourse', requireSignin, isAdmin, addCourseValidator, validate, createCourse )
+
+// To Edit a course details
+// router.put('/admin/course/:courseId', requireSignin, isAdmin, editCourseValidator, validate, editCourse)
+
+// To Delete a course
+// router.delete('/admin/course/:courseId', requireSignin, isAdmin, deleteCourse)
 
 // Edit Student Route. Edited info - firstname, lastname, department and level.
 router.put('/admin/editStudent/:studentId', requireSignin, isAdmin, editStudentValidator, validate, editStudent )
