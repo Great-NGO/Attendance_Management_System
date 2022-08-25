@@ -19,7 +19,6 @@ form.addEventListener("submit", (event) => {
   console.log(mailReg)
   //check if mail meets empty test
   if (mailTest) {
-    console.log("Jester's Priviledge")
     email.className = "invalid";
     email.focus();
     error.textContent = "Please enter your Email Address";
