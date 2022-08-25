@@ -66,7 +66,7 @@ const CourseSchema = new Schema({
         },
       ],
       studentLocation: [{ type: String }],
-      lecturerLocation: [{ type: String }],
+      // lecturerLocation: [{ type: String }],
       isPresent: [{ type: Boolean }],
       attendanceScore: {
         type: Number,
@@ -77,6 +77,7 @@ const CourseSchema = new Schema({
       _id: false
     },
   ],
+  lecturerLocation: [{ type: String }],   //To capture location of lecturer each time an attendance is opened for capturing
   canSubmitAttendance: {    //Property to allow students to be able to submit attendance or not
     type: Boolean,
     default: false,
@@ -84,7 +85,8 @@ const CourseSchema = new Schema({
   attendanceNum: {
     type: Number,
     // required: true,
-    default: 1,
+    // default: 1,
+    default: 10,  //Would change the value later
     min: [1, "Attendance for course must be taken at least one time"],
   },
 });

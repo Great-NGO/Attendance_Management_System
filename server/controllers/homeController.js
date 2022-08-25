@@ -8,7 +8,7 @@ const { handleErrorResponse, handleSuccessResponse } = require('../utils/respons
 
 
 const getDepartments = (req, res) => {
-    const departments = CourseClass.getCourses()
+    const departments = CourseClass.getDepartments()
     handleSuccessResponse(res, "", 200, {departments, num: departments.length})
 }
 

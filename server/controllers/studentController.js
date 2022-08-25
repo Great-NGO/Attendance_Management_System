@@ -133,8 +133,10 @@ const studentUpdatePassword = async (req, res) => {
 
     const {newPassword } = req.body;
 
+    console.log("dfg",  newPassword)
     const studentObject = new StudentClass()
     const updatedStudent = await studentObject.updatePassword(studentId, newPassword, "student")
+    console.log("Updated stud", updatedStudent)
     if(updatedStudent[0] == true) {
         handleSuccessResponse(res, updatedStudent[2], 200)
     } else {

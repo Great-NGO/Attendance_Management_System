@@ -91,13 +91,49 @@ class CourseClass {
 
     async getCoursesByLecturer(lecturerId) {
         try {
-            const courses = await Course.find({ 'taughtBy.lecturerId' : lecturerId });
+            const courses = await Course.find({ 'taughtBy.lecturerId' : lecturerId }, '-taughtBy');
+            // const courses = await Course.find({ 'taughtBy.lecturerId' : lecturerId });
             return [ true, courses]
             
         } catch (error) {
             return [false, translateError(error)]
         }
     }
+
+    async getCoursesByStudent(studentId) {
+        try {
+        
+            const courses = await Course.find({'takenBy.studentId':studentId}, '-takenBy');
+            return [ true, courses]
+            
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    // async getStudentSingleCourse(courseId, studentId) {
+    //     try {
+            
+    //         // const courses = await Course.findOne({})
+    //         const courses = await this.getCoursesByStudent(studentId);
+    //         console.log("STUD COURSES ", courses);
+    //         const singleCourse = await Course.findById(courseId);
+    //         console.log('SINGLE COURSe ', singleCourse)
+    //         if(singleCourse){
+    //             const studentCourse = courses[1].includes(singleCourse);
+    //             console.log("Student Course ", studentCourse);
+    //             if(studentCourse == true) {
+    //                 return [ true, singleCourse]
+    //             } else{
+    //                 return [false, "User not taking course"]
+    //             }
+    //         } else {
+    //             return [false, 'Course does not exist.']
+    //         }
+    //     } catch (error) {
+    //         return [false, translateError(error)]
+    //     }
+    // }
 
     // async getAllCourses() {
 
@@ -107,7 +143,7 @@ class CourseClass {
         return `There are ${this.classNum} students enrolled`
     }
 
-    static getCourses() {
+    static getDepartments() {
         return [    
             "Accounting",
             "Agricuture",
