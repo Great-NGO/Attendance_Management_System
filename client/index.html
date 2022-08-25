@@ -2,11 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BU Attendance Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Login | ATMIS</title>
 </head>
 <body>
-    <h1>Attendance Management System</h1>
+    <form class="login" method="post" novalidate>
+        <section class="side">
+            <div class="choose-role">
+                <h1>Login As</h1>
+                <div class="roles">
+                    <div class="student">
+                        <input type="radio" name="role" value="student" checked>
+                        <img src="assets/student.svg" alt="Click here For student">
+                        <p>student</p>
+                    </div>
+                    <div class="lecturer">
+                        <input type="radio" name="role" value="lecturer">
+                        <img src="assets/teacher.svg" alt="Click here For Lecturer">
+                        <p>lecturer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="main">
+            <div class="login-container">
+                <p class="title">Welcome</p>
+                <div class="separator"></div>
+                <div class="login-form">
+                <small id="error" aria-live="polite"></small>
+                    <div class="choose-role-mini">
+                        <div class="student">
+                            <input type="radio" name="role" value="student">
+                            <img src="assets/student-mini.svg" alt="Click here For student">
+                            <p>student</p>
+                            <div class="border">
+                                <img src="assets/checktick.svg" alt="">
+                            </div>
+                        </div>
+                        <div class="lecturer">
+                            <input type="radio" name="role" value="lecturer">
+                            <img src="assets/teacher-mini.svg" alt="Click here For Lecturer">
+                            <p>lecturer</p>
+                            <div class="border">
+                                <img src="assets/checktick.svg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <input id="idNum" type="text" placeholder="ID Number">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-control">
+                        <input id="password" type="password" placeholder="Password">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <a href="Change-Password.html">Forgot Password?</a>
+                    <button type="submit">Login</button>
+                </div>
+            </div>
+        </section>
+    </form>
+    <script src="js/script.js"></script>
 </body>
 </html>

@@ -43,6 +43,13 @@ div.container div.myform h2{
 color: var(--secondary-color);
 margin-bottom: 20px;
 }
+div.container div.myform p{
+    margin-block: 20px;
+    font-size: 0.9em;
+    color: hsl(0, 0%, 30%);
+    text-align: center;
+}
+
 div.container div.myform #error {
     color: var(--invalid-color);
 }
@@ -58,6 +65,28 @@ padding: 7px 0;
 font-size: 14px;
 background-color: inherit;
 }
+.container .myform img {
+    display: inline-flex;
+    content: '';
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    margin-top: -13.5%;
+    right: 63px;
+}
+.container .myform img:hover {
+    cursor: pointer;
+    /* filter: invert(50%); */
+}
+
+.container .myform form .nonvisible {
+    filter: invert(50%);
+}
+.container .myform .visible {
+    filter: invert(53%) sepia(65%) saturate(3301%) hue-rotate(201deg) brightness(81%) contrast(88%);
+}
+
+
 div.container #form .invalid{
     border-bottom: 2px solid var(--invalid-color);
 }
@@ -81,4 +110,6 @@ div.container div.myform button:hover{
     cursor: pointer;
     background-color: hsl(219, 52%, 60%);
 }
+
+
 

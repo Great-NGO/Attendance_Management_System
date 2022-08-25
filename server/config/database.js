@@ -1,7 +1,7 @@
 // Database Configuration files
 const mongoose = require("mongoose");
 const { log, logError } = require("../utils/logging");
-// const { MONGODB_URI } = process.env;
+const { MONGODB_URI } = process.env;
 
 //To disable buffering
 // mongoose.set("bufferCommands", false);

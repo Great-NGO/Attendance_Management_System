@@ -13,6 +13,7 @@ body {
     background-color: #e0e0e0;
     --primary-color: #4672c4;
     --secondary-color: #ffbd7d;
+    --invalid-color: #F72119;
     font-family: sans-serif;
 }
 html.dark-theme {
@@ -22,6 +23,278 @@ html.dark-theme {
     color: white;
     background-color: orange;
 } 
+.login {
+    min-height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.login section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login section.side {
+    display: flex;
+    align-items: center;
+    background-color: hsl(0, 0%, 50%);
+}
+.login section.side .choose-role{
+    width: 100%;
+    display: flex;
+    flex-flow: column wrap;
+}
+.login section.side .choose-role h1{
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.login section.side .choose-role .roles {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.login section.side .choose-role .roles div{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    position: relative;
+    z-index: auto;
+}
+.login section.side .choose-role .roles div > p{
+    text-transform: uppercase;
+    font-size: 150%;
+    text-align: center;
+    font-weight: 600;
+    color: white;
+    margin-top: 1em;
+}
+.login section.side .choose-role .roles div > input{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 9997;
+    cursor: pointer;
+}
+.login section.side .choose-role .roles div > input:hover + img{
+    scale: 1.1;
+    filter: brightness(110%);
+}
+.login section.side .choose-role .roles div > input:checked + img{
+    filter: brightness(125%);
+    scale: 1.2;
+}
+
+.login section.side .choose-role .roles img{
+    width: 70%;
+}
+.login .main {
+    background-color: white;
+}
+.login .login-container {
+    max-width: 450px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login .title {
+    text-transform: uppercase;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.login .separator {
+    width: 150px;
+    height: 4px;
+    background-color: var(--primary-color);
+    margin: 24px;
+}
+
+.login .welcome-message {
+    text-align: center;
+    font-size: 1.1em;
+    line-height: 28px;
+    margin-bottom: 30px;
+    color: #696969;
+}
+#error {
+    color: var(--invalid-color);
+    text-align: center;
+}
+
+.login .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.login .form-control {
+    width: 100%;
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.login input,
+.login button {
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    font-size: 1.1em;
+}
+
+.login input {
+    width: 100%;
+    background: #e6e6e6;
+    color: #333;
+    letter-spacing: 0.5px;
+    padding: 14px 64px;
+}
+
+.login input ~ i {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    transition: color   0.4s;
+}
+.login input:focus {
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+}
+.login input:focus ~ i {
+    color: var(--primary-color);
+}
+.login .invalid {
+    border: 1px solid var(--invalid-color) !important;
+    box-shadow: 0 0 10px var(--invalid-color) !important;    
+}
+.login a {
+    width: fit-content;
+    margin-left: auto;
+}
+
+.login a:link {
+    color: var(--primary-color);
+    text-align: right;
+    text-decoration: none;
+}
+.login a:visited {
+    text-decoration: none;
+}
+.login a:focus {
+    outline: none;
+    color: var(--secondary-color);
+    text-decoration: 2px solid var(--secondary-color) underline;
+}
+.login a:hover {
+    color: gray;
+    pointer: cursor;
+}
+
+.login button {
+    color: #fff;
+    padding: 14px 64px;
+    margin: 32px auto;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    background-image: linear-gradient(to right, #15a0e1, #8b33c5);
+    cursor: pointer;
+    transition: opacity 0.4s;
+}
+
+.login button:hover {
+    opacity: 0.7;
+}
+.login button:focus {
+    outline: 2px solid black;
+}
+
+.login-form .choose-role-mini {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+.login-form .choose-role-mini div{
+    position: relative;
+    background-color: #e6e6e6;
+    margin-block: 2em;
+    padding-block: 16px;
+    padding-inline: 25px;
+}
+.login-form .choose-role-mini div > img {
+    width: 60px;
+    height: 60px;
+}
+
+.login-form .choose-role-mini div > input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 3;
+    cursor: pointer;
+}
+.login-form .choose-role-mini div input ~ .border{
+    content: '';
+    position: absolute;
+    inset: 0;
+    top: -32px;
+    border: 1px solid black;
+    z-index: 1;
+    background: none;
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.login-form .choose-role-mini div input:checked ~ .border{
+    visibility: visible;
+}
+.login-form .choose-role-mini div input ~ div img{
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    bottom: -11px;
+    right: -11px;
+    z-index: 9999;
+}
+
+.login-form .choose-role-mini div > p {
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+/* ----  Responsiveness   ----  */
+@media (min-width: 801px) {
+    .choose-role-mini {
+        display: none !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .login {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .login .side {
+        display: none !important;
+    }
+    .main {
+        border-radius: 15px;
+    }
+    
+}
 
 main {
     display: flex;
@@ -109,6 +382,7 @@ html.dark-theme #student-course-view li .highlighted::after {
     width: 100%;
     background-image: linear-gradient(225deg, var(--primary-color), var(--secondary-color));
     padding: 1px;
+    z-index: 2;
 }
 
 #student-course-view #title-card {
@@ -350,13 +624,13 @@ html.dark-theme #student-course-view .key .red {
     border-right: 2em solid #08DEE6;
 }
 #student-course-view #overview-wrapper #detailed-overview tr {
-    border: 1px solid black;
+    border: 0.1px solid black;
 }
 
 #student-course-view #overview-wrapper #detailed-overview th {
     padding: 10px;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
+    border-right: 0.1px solid black;
+    border-bottom: 0.1px solid black;
 }
 #student-course-view #overview-wrapper #detailed-overview tbody tr:last-of-type th{
     border-bottom: none;
@@ -383,6 +657,67 @@ html.dark-theme #student-course-view #overview-wrapper #detailed-overview .prese
 }
 #student-course-view #overview-wrapper #detailed-overview tfoot td{
     padding-inline: 2px;
+}
+.page-404 {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+}
+.page-404 > .error404 {
+    font-size: calc(9vw + 2em);
+    font-weight: 900;
+    opacity: 1;
+    margin-top: 2rem;
+    background: linear-gradient(to top, #cacaca, #f0f0f0);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: rgba(255, 255, 255, 0.5);
+    /* text-shadow:  20px 20px 46px #727272,
+             -20px -20px 46px #ffffff; */
+}
+.page-404 hr {
+    width: 100%;
+}
+.page-404 > .sub-head {
+    font-size: calc(2vw + 2em);
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.page-404 button {
+    margin-top: 2rem;
+    border: none;
+    padding-block: 15px;
+    padding-inline: 50px;
+    font-size: calc(.3vw + 1em);
+    border-radius: 50px;
+    background: linear-gradient(145deg, #f0f0f0, #cacaca);
+    box-shadow:  8px 8px 15px #5e5e5e,
+                 -8px -8px 15px #ffffff;
+    color: var(--primary-color);
+    transition: color 0.3s linear;
+    letter-spacing: 2px;
+}
+.page-404 button:hover {
+    cursor: pointer;
+    background: #e0e0e0;
+    color: gray;
+    box-shadow:  8px 8px 15px #5e5e5e,
+                 -8px -8px 15px #ffffff;
+}
+.page404 button:focus {
+    background: linear-gradient(145deg, #cacaca, #f0f0f0);
+    box-shadow:  8px 8px 15px #5e5e5e,
+             -8px -8px 15px #ffffff;
+}
+.page404 button:active {
+    background: #e0e0e0;
+    box-shadow: inset 8px 8px 15px #5e5e5e,
+                inset -8px -8px 15px #ffffff;
+    color: var(--secondary-color);
 }
 
 
