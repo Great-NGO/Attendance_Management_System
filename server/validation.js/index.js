@@ -137,6 +137,49 @@ const resetPasswordValidator = [
 
 ]
 
+// Add Course Validation rule
+const addCourseValidator = [
+
+    check("lecturer", "Enter Course lecturer").trim().notEmpty(),
+    check("staffId", "Enter lecturer's staff Id").trim().notEmpty(),
+    check("courseTitle", "Enter Course title").trim().notEmpty(),
+    check("courseCode", "Enter Course Code").trim().notEmpty(),
+    check("courseDepartment", "Enter Course Department").trim().notEmpty()
+]
+
+// Edit Course Validation rule
+const editCourseValidator = [
+
+    check("lecturer", "Enter Course lecturer").trim().notEmpty(),
+    check("staffId", "Enter lecturer's staff Id").trim().notEmpty(),
+    check("courseTitle", "Enter Course title").trim().notEmpty(),
+    check("courseDepartment", "Enter Course Department").trim().notEmpty()
+]
+
+// Add Student to Course Validation rule
+const addStudentToCourseValidator = [
+    check("courseCode", "Enter the course code of course you want to add student to.").trim().notEmpty(),
+    check("studentMatricNo", "Enter student's matric number").trim().notEmpty()
+]
+
+const setAttendanceTimelineValidator = [
+    check("canSubmitAttendance", "Open or close attendance by setting 'canSubmitAttendance' to true or false").isBoolean(),
+    check("latitude", "Lecturer's location latitude position is required").matches(/\d/),
+    check("longitude", "Lecturer's location longitude position is required").matches(/\d/)
+    // check("lecturerLocation", "Lecturer's location is required").notEmpty(),
+    // check("lecturerLocation", "Lecturer's location must be in valid coordinates" ).matches(/d/)
+    // check("lecturerLocation", "Lecturer's location must be in valid coordinates" ).matches(/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/)
+]
+
+// Submit Attendance Students
+const studentSubmitAttendanceValidator = [
+    check("courseCode", "Enter the course code of course you want to submit attendance for.").trim().notEmpty(),
+    check("latitude", "Student's location latitude position is required").matches(/\d/),
+    check("longitude", "Student's location longitude position is required").matches(/\d/)
+    // check("studentLocation", "Enter student's location.").trim().notEmpty()
+    // check("studentMatricNo", "Enter student's matric number").trim().notEmpty()
+]
+
 
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -163,5 +206,10 @@ module.exports = {
     forgotPasswordValidator,
     adminForgotPasswordValidator,
     resetPasswordValidator,
+    addCourseValidator,
+    editCourseValidator,
+    addStudentToCourseValidator,
+    setAttendanceTimelineValidator,
+    studentSubmitAttendanceValidator,
     validate
 }

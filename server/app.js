@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // For static rendering
 app.use(express.static('client'))
-
+app.use("uploads", express.static('uploads'))
 
 
 // Routes
@@ -36,6 +36,7 @@ app.use('/api/v1', require('./routes/admin'))
 app.use('/api/v1', require('./routes/lecturer'))
 app.use('/api/v1', require('./routes/student'))
 app.use('/api/v1', require('./routes/home'))
+app.use('/api/v1', require('./routes/course'))
 app.use('/api/v1', require('./routes/user'))
 
 

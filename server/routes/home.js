@@ -12,7 +12,7 @@ router.get('/departments', getDepartments)
 
 router.get('/lecturers', requireSignin, getLecturers);
 
-router.get('/students', getStudents);
+router.get('/students', requireSignin, getStudents);
 
 router.get('/students/department/:department', requireSignin, isAdminOrLecturer,studentsByDepartment)
 

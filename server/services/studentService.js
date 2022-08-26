@@ -103,7 +103,7 @@ class StudentClass extends UserClass {
         }
     }
 
-    static async getStudentByIdNum(idNum) {
+    async getStudentByIdNum(idNum) {
         let student = await User.findOne({idNum, role:"student"});
         // warn(student);
         if(student) {
@@ -120,15 +120,6 @@ class StudentClass extends UserClass {
             return [true, student]
         } else {
             return [ false, "Student does not exist."]
-        }
-    }
-
-    static async getStudentByIdNumOrEmail(idNumOrEmail) {
-        let student = await User.findOne({idNum: idNumOrEmail, role:"student"}) || await User.findOne({email:idNumOrEmail, role: "student"})
-        if(student) {
-            return [true, student]
-        } else {
-            return [false, "Student does not exist"]
         }
     }
 
