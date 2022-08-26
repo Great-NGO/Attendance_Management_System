@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <title>AMS</title>
+</head>
+<body>
+    <main id="student-course-view">
+        <nav>
+            <!-- <div id="logo">AMS<span class="purple">.</span></div> -->
+            <ul id="views">
+                    <li><a href="#" tabindex="-1"><button class="highlighted">attendance</button></a></li>
+                    <li><a tabindex="-1" href="student-course-attendance.html"><button>history</button></a></li>
+            </ul>
+        </nav>
+        <div id="title-wrapper">
+            <header id="title-card">
+                <p id="course-title"></p>
+                <p id="course-code"></p>
+                <p id="lecturer"></p>
+            </header>
+        </div>
+        <section id="attendance-view">
+            <a href="#" tabindex="-1" >
+                <button>
+                    <img src="../assets/tap.svg" alt="this image could not load">
+                    <p>clock in</p>
+                </button>
+            </a>
+            <div id="wrapper">
+                <section>
+                    <p>attendance overview</p>
+                    <section id="overview">
+                        <div id="total">
+                            <h1>0</h1>
+                            <p>Total Days</p>
+                        </div>
+                        <div id="present">
+                            <h1>0</h1>
+                            <p>Present</p>
+                        </div>
+                        <div id="absent">
+                            <h1>0</h1>
+                            <p>Absent</p>
+                        </div>                        
+                    </section>
+                </section>
+            </div>
+        </section>
+        <button class = "dark-mode-toggle">
+            <img src="../assets/darkmode-toggle.svg" alt="image could not load">
+        </button>
+    </main>
+        <script src="../js/darkmode.js"></script>
+</body>
+</html>

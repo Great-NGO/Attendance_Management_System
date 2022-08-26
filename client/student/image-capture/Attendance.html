@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="image-capture">
+        <h1 class="face">ATTENDANCE CAPTURE</h1>
+        <div class="image-display">
+            <div class = "capture-container">
+                <div class="video-container">
+                    <video autoplay="true" id="video" width="600" height="480"></video>
+                </div>
+                <button class="btn1" id="capture">CAPTURE</button>
+            </div>
+            <div class="next-container">
+                <div class="canvas-container">
+                    <canvas id="canvas" width="600" height="480"></canvas>
+                </div>
+                <a id="anchor"><button onclick="next()" class="btn2">NEXT</button></a>
+            </div>
+        </div>
+    </div>
+</main>   
+    <script src="Attendance.js"></script>
+</body>
+</html>

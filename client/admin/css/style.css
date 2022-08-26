@@ -1,0 +1,115 @@
+:root {
+    --primary-color:#e0e0e0;
+    /* --secondary-color: #1c1c1e; */
+    --secondary-color: #4672c4;
+    --invalid-color: #F72119;
+}
+*{
+padding: 0;
+margin: 0;
+box-sizing: border-box;
+font-family: sans-serif;
+}
+
+body{
+background-color: var(--primary-color);
+}
+
+div.container{
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%,-50%);
+
+display: flex;
+flex-direction: row;
+align-items: center;
+
+background-color: #e0e0e0;
+padding: 30px;
+box-shadow: 0 50px 50px -50px darkslategray;
+border-radius: 50px;
+background: linear-gradient(145deg, #f0f0f0, #cacaca);
+box-shadow:  20px 20px 46px #727272,
+             -20px -20px 46px #ffffff;
+}
+
+div.container div.myform{
+width: 270px;
+margin-right: 30px;
+}
+
+div.container div.myform h2{
+color: var(--secondary-color);
+margin-bottom: 20px;
+}
+div.container div.myform p{
+    margin-block: 20px;
+    font-size: 0.9em;
+    color: hsl(0, 0%, 30%);
+    text-align: center;
+}
+
+div.container div.myform #error {
+    color: var(--invalid-color);
+}
+
+div.container div.myform input{
+border: none;
+outline: none;
+border-radius: 0;
+width: 100%;
+border-bottom: 2px solid var(--secondary-color);
+margin-bottom: 25px;
+padding: 7px 0;
+font-size: 14px;
+background-color: inherit;
+}
+.container .myform img {
+    display: inline-flex;
+    content: '';
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    margin-top: -13.5%;
+    right: 63px;
+}
+.container .myform img:hover {
+    cursor: pointer;
+    /* filter: invert(50%); */
+}
+
+.container .myform form .nonvisible {
+    filter: invert(50%);
+}
+.container .myform .visible {
+    filter: invert(53%) sepia(65%) saturate(3301%) hue-rotate(201deg) brightness(81%) contrast(88%);
+}
+
+
+div.container #form .invalid{
+    border-bottom: 2px solid var(--invalid-color);
+}
+div.container div.myform input:focus:invalid:required{
+    border-bottom: 2px solid var(--secondary-color);
+}
+div.container div.myform button{
+color: white;
+background-color: var(--secondary-color);
+border: none;
+outline: none;
+border-radius: 2px;
+font-size: 17px;
+padding: 5px 12px;
+font-weight: 500;
+}
+div.container div.myform button:focus{
+    outline: 1px solid black;
+}
+div.container div.myform button:hover{
+    cursor: pointer;
+    background-color: hsl(219, 52%, 60%);
+}
+
+
+
