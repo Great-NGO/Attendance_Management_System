@@ -1,0 +1,60 @@
+
+.form {
+    background-color:white;
+    padding: 20px;
+    margin: 50px 0;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.form-control {
+    display: block;
+    width: 90%;
+    margin: 15px 0;
+}
+
+.forgot {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 10px 0;
+}
+
+.forgot a {
+    text-decoration: none;
+    font-size: small;
+    font-style: italic;
+    color: black;
+}
+
+.form-control label {
+    font-size: medium;
+    margin: 10px 0;
+}
+
+.form-control input {
+    width: 100%;
+    padding: 8px 6px;
+    border: 2px solid  #ccc;
+    background-color: transparent;
+    margin: 10px 0;
+}
+
+.form-control select {
+    width: 100%;
+    padding: 8px 6px;
+    border: 2px solid  #ccc;
+    background-color: transparent;
+}
+
+.btn {
+    padding: 10px 30px;
+    background-color: #004282;
+    cursor: pointer;
+    color: white;
+    border: none;
+    margin: 10px 0;
+}
+
+.btn:hover {
+    background-color: #034c96;
+}
