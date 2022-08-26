@@ -27,6 +27,9 @@ router.put('/lecturer/course/OpenAttendance/:courseId', requireSignin, isLecture
 
 // router.put('/lecturer/editAttendance/:courseId', requireSignin, isLecturer, editAttendance)
 
+// To remove students from a course (After semester is over)
+// router.put('/lecturer/remove-all/:courseId', requireSignin, isLecturer, removeAllStudents)
+
 // router.put('/lecturer/editCourse/:courseId', requireSignin, isLecturer, editCourse)
 
 module.exports = router;

@@ -9,7 +9,7 @@ class CourseClass {
         // this.classNum = classNum;
         this.courseDepartment = courseDepartment;
         this.takenBy = takenBy;
-        this.attendance = attendance;
+        // this.attendance = attendance;
         this.attendanceNum = attendanceNum;
     }
 
@@ -23,7 +23,7 @@ class CourseClass {
                 courseCode: this.courseCode,
                 courseDepartment: this.courseDepartment,
                 takenBy: this.takenBy,
-                attendance: this.attendance,
+                // attendance: this.attendance,
                 attendanceNum: this.attendanceNum
             })
 

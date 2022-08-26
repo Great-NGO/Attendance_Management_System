@@ -3,7 +3,6 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema;
 
 const CourseSchema = new Schema({
-  // taughtBy: { type: ObjectId, required: true, ref: "user" }, //Lecturer
   taughtBy: {
     lecturerId: {
       type: ObjectId,
@@ -25,7 +24,6 @@ const CourseSchema = new Schema({
     unique: true,
   },
   courseDepartment: { type: String, required: true },
-  // takenBy: [{type: ObjectId, required: true, ref: "user"}],
   takenBy: [
     {
       studentId: {
@@ -41,44 +39,68 @@ const CourseSchema = new Schema({
         // required: true,
         // unique: true,
       },
-      studentLevel : {
-        type: Number
+      studentLevel: {
+        type: Number,
       },
-      _id: false
-    },
-  ],
-  //   attendance: [{type: ObjectId, ref: "attendance"}],
-  attendance: [
-    {
-      studentName: {
-        type: String,
-        // required: true,
-      },
-      studentMatricNo: {
-        type: String,
-        // required: true,
-        // unique: true,
-      },
-      studentPicture: [
+      attendance: [
         {
-          //For student image upload
-          type: String,
+          studentPicture: {
+            //For student image upload
+            type: String,
+          },
+          studentLocation: { type: String },
+          isPresent: { type: Boolean },
+          date: {
+            type: Date,
+            default: Date.now,
+          },
         },
       ],
-      studentLocation: [{ type: String }],
-      // lecturerLocation: [{ type: String }],
-      isPresent: [{ type: Boolean }],
-      attendanceScore: {
+      incrementattendanceScore: {  //Would update this score based on the attendance collection
         type: Number,
-        // required: true,
         default: 0,
-        min: [0, "Attendance Score can not be less than 0"],
       },
-      _id: false
+      attendanceScore: {    //student attendance score
+        type: Number
+      },
+      _id: false,
     },
   ],
-  lecturerLocation: [{ type: String }],   //To capture location of lecturer each time an attendance is opened for capturing
-  canSubmitAttendance: {    //Property to allow students to be able to submit attendance or not
+  //
+  // attendance: [
+  //   {
+  //     studentName: {
+  //       type: String,
+  //     },
+  //     studentMatricNo: {
+  //       type: String,
+  //     },
+  //     studentPicture: [
+  //       {
+  //         type: String,
+  //       },
+  //     ],
+  //     studentLocation: [{ type: String }],
+  //     isPresent: [{ type: Boolean }],
+  //     attendanceScore: {
+  //       type: Number,
+  //       default: 0,
+  //       min: [0, "Attendance Score can not be less than 0"],
+  //     },
+  //     date: {
+  //       type: Date,
+  //       default: Date.now
+  //     },
+  //     hasSubmitted: {
+  //       type: Boolean,
+  //       default: false
+  //     },
+  //     _id: false
+  //   },
+  // ],
+  // lecturerLocation: [{ type: String }], //To capture location of lecturer each time an attendance is opened for capturing
+  canSubmitAttendance: {
+    //Property to allow students to be able to submit attendance or not
     type: Boolean,
     default: false,
   },
@@ -86,8 +108,15 @@ const CourseSchema = new Schema({
     type: Number,
     // required: true,
     // default: 1,
-    default: 10,  //Would change the value later
+    default: 10, //Would change the value later
     min: [1, "Attendance for course must be taken at least one time"],
+  },
+  // Course would have a semester it belongs to and a session.
+  semester: {
+    type: String,
+  },
+  session: {
+    type: String,
   },
 });
 

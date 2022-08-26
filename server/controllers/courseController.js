@@ -1,5 +1,7 @@
 require('dotenv').config();
+const Course = require('../model/course');
 const { AdminClass } = require('../services/adminService');
+const { LecturerLocationClass, AttendanceClass } = require('../services/attendanceService');
 const { CourseClass } = require("../services/courseService");
 const { LecturerClass } = require('../services/lecturerService');
 const { StudentClass } = require('../services/studentService');
@@ -148,6 +150,9 @@ const addStudentToCourse = async (req, res) => {
 
 const setAttendanceTimeline = async (req, res) => {
     const { courseId } = req.params;
+    const lecturerId = req.user.user_id;
+    const staffId = req.user.idNum;
+
     const { canSubmitAttendance, longitude, latitude } = req.body;
 
     const location = `${latitude}, ${longitude}`;       //Google's format for validation from their api
@@ -162,7 +167,7 @@ const setAttendanceTimeline = async (req, res) => {
     } else {
 
         // If not lecturer
-        if (courseExists[1].taughtBy.lecturerId != req.user.user_id) {
+        if (courseExists[1].taughtBy.lecturerId != lecturerId) {
             return handleErrorResponse(res, "Not Course Lecturer. Unauthorized!", 401)
         }
 
@@ -170,11 +175,19 @@ const setAttendanceTimeline = async (req, res) => {
 
         // Only capture lecturers location if attendance is set to open.
         if (canSubmitAttendance == true || canSubmitAttendance == "true") {
-            const { lecturerLocation } = courseExists[1];
-            const newLocation = lecturerLocation.concat(location)
-            console.log("New Location ", newLocation);
+            // const { lecturerLocation } = courseExists[1];
+            // const newLocation = lecturerLocation.concat(location)
+            // console.log("New Location ", newLocation);
 
-            updateEnableAttendance = await courseObject.update(courseId, { canSubmitAttendance, lecturerLocation: newLocation });
+            // Check if lecturer location is the same and has already been captured the same day
+
+            const newLocationObject = new LecturerLocationClass(lecturerId, staffId, courseId, courseExists[1].courseCode, location)
+            const newLocation = await newLocationObject.saveLocation()
+
+            console.log("NEW Location ", newLocation);
+
+            updateEnableAttendance = await courseObject.update(courseId, { canSubmitAttendance });
+
 
         } else {
             updateEnableAttendance = await courseObject.update(courseId, { canSubmitAttendance });
@@ -273,9 +286,6 @@ const submitCourseAttendance = async (req, res) => {
             return handleErrorResponse(res, "Course with course code does not exist", 404)
         } else {
 
-            // const { attendance } = courseExists[1];
-            const { attendance } = courseExists[1];
-
             // If Attendance is closed - student not allowed to submit
             if (courseExists[1].canSubmitAttendance == false) {
                 return handleErrorResponse(res, "Attendance has been closed", 401)
@@ -287,71 +297,33 @@ const submitCourseAttendance = async (req, res) => {
                 return handleErrorResponse(res, "Failed to capture attendance because student picture not captured.", 400)
             }
 
+            let studentCourseAttendance = await new AttendanceClass().getStudentCourseAttendance(courseExists[1]._id, studentId);
+            console.log("Student course attendance ", studentCourseAttendance )
+            studentCourseAttendance = studentCourseAttendance[1]
+            
+            const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => new Date(attendance.date) <= new Date(Date.now()) )
+            console.log(hasTakenAttendance)
+
+            if( hasTakenAttendance >= 0) {
+                return handleErrorResponse(res, "Student has already taken attendance", 400)
+            }
+
             let uploadedPicture = await uploadStudentPicToCloudinary(filePath);
             console.log("The uploaded student picture ", uploadedPicture);
             uploadedPicture = uploadedPicture.url;
 
-            const studentIndex = attendance.findIndex((student) => student.studentMatricNo == studentMatricNo)
-            console.log("The studentIndex ", studentIndex)
-            let fields;
-            // If Student has never captured an attendance (First attendance taken for course). Add him to the attendance array
-            if (studentIndex == -1) {
+            // If Student has never captured an attendance 
 
-                fields = {
-                    studentName: `${studentExists[1].firstname} ${studentExists[1].lastname}`,
-                    studentMatricNo,
-                    studentPicture: [uploadedPicture],    //The first element in the array will be the new picture
-                    isPresent: [true],        //The first element in the array will be true - meaning present
-                    studentLocation: [location],
-                    attendanceScore: 1
+            let studentName = `${studentExists[1].firstname} ${studentExists[1].lastname}`;
+            let studentPicture = uploadedPicture;
 
-                }
-
-            } else {    // Student has already captured an attendance in a previous class. Capture a new one
-
-
-                const studentAttendance = attendance[studentIndex];
-
-                console.log("Student attendance ", studentAttendance);
-
-
-                let studentPictureArray = studentAttendance.studentPicture.concat(uploadedPicture)
-                // studentAttendance.studentPicture = studentAttendance.studentPicture.concat(uploadedPicture)
-                let studentIsPresent = studentAttendance.isPresent.concat(true)
-                let studentLocation = studentAttendance.studentLocation.concat(location)
-
-                console.log("Student ", studentPictureArray, studentIsPresent, studentLocation);
-
-                // studentAttendance.studentPicture = studentAttendance.studentPicture.push(uploadedPicture)
-                // studentAttendance.isPresent = studentAttendance.isPresent.push(true)
-                // studentAttendance.studentLocation = studentAttendance.studentLocation.push(location)
-
-                // studentAttendance.studentPicture.push(uploadedPicture)
-                // studentAttendance.isPresent.push(true)
-                // studentAttendance.studentLocation.push(location)
-
-                // fields = {
-                //     studentPicture: studentAttendance.studentPicture,
-                //     isPresent: studentAttendance.isPresent,
-                //     attendanceScore: studentAttendance.attendanceScore += 1,
-                //     studentLocation: studentAttendance.studentLocation
-                // }
-      
-                fields = {
-                    studentPicture: studentPictureArray,
-                    isPresent: studentIsPresent,
-                    attendanceScore: studentAttendance.attendanceScore += 1,
-                    studentLocation
-                }
-            }
-
-            console.log("Fields ", fields)
-
-            // Submit Attendance
-            const submitted = await courseObject.update(courseExists[1]._id, {attendance:fields});
+            // const submitted = await courseObject.update(courseExists[1]._id, {attendance:fields});
+            const attendanceObject = new AttendanceClass(courseExists[1]._id, courseCode, studentId, studentName, studentMatricNo, studentPicture, location)
+            const submitted = await attendanceObject.submit()
+            
             console.log("Submitted ", submitted);
             if (submitted[0] == true) {
-                handleSuccessResponse(res, "Attendance has been captured successfully.", 200, { studentAttendance: fields })
+                handleSuccessResponse(res, "Attendance has been captured successfully.", 200, { studentAttendance: submitted[1] })
             } else {
                 return handleErrorResponse(res, "Failed to submit attendance", 400);
             }

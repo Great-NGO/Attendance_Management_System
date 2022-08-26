@@ -32,32 +32,14 @@ const UserSchema = new Schema(
     },
     level: { type: Number },
     department: { type: String },
-    // token: { type: String},
-    studentPicture: { type: String },
-    // isAdmin: { type: Boolean, required: true},
-    // isLecturer: { type: Boolean, required: true},
-    // isStudent: { type: Boolean, required: true}
   },
   { timestamps: true }
 );
 
-// Defining set password and validate password method on the user model
-// UserSchema.methods.setPassword = function(password) {
-//   console.log("The password passed ", password)
-//   // return await encryptPassword(password)
-//   // return `Password - ${password}`
-// }
 
-// UserSchema.methods.setPassword = encryptPassword(this.password)
-
-UserSchema.methods.stringLog = function(string) {
-  console.log("Thes string ", string);
-  return `A String - ${string}`
-}
-
+// Schema methods - validPasswword to compare a users password if its valid or not 
 UserSchema.methods.validPassword = async function(password){
   return await comparePassword(password, this.password)
-
 }
 
 const User = mongoose.model("User", UserSchema);
