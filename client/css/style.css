@@ -198,7 +198,7 @@ html.dark-theme {
 }
 .login a:hover {
     color: gray;
-    pointer: cursor;
+    cursor: pointer;
 }
 
 .login button {
