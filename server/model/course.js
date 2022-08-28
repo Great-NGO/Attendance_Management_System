@@ -42,25 +42,25 @@ const CourseSchema = new Schema({
       studentLevel: {
         type: Number,
       },
-      attendance: [
-        {
-          studentPicture: {
-            //For student image upload
-            type: String,
-          },
-          studentLocation: { type: String },
-          isPresent: { type: Boolean },
-          date: {
-            type: Date,
-            default: Date.now,
-          },
-        },
-      ],
-      incrementattendanceScore: {  //Would update this score based on the attendance collection
+      // attendance: [
+      //   {
+      //     studentPicture: {
+      //       //For student image upload
+      //       type: String,
+      //     },
+      //     studentLocation: { type: String },
+      //     isPresent: { type: Boolean },
+      //     date: {
+      //       type: Date,
+      //       default: Date.now,
+      //     },
+      //   },
+      // ],
+      incrementAttendanceScore: {  //Would update this score based on the attendance collection
         type: Number,
         default: 0,
       },
-      attendanceScore: {    //student attendance score
+      attendanceScore: {    //student total attendance score
         type: Number
       },
       _id: false,

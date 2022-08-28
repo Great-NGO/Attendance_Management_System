@@ -131,7 +131,8 @@ class AttendanceClass {
     /** Get Student Attendance method which returns students attendance for a course*/
     async getStudentCourseAttendance(courseId, studentId) {
         try {
-            const studentAttendance = await Attendance.find({ courseId, studentId });
+            // const studentAttendance = await Attendance.find({ courseId, studentId });
+            const studentAttendance = await Attendance.find({ courseId, studentId }, '-courseId -studentId -createdAt -updatedAt -__v ');
             if (studentAttendance) {
                 return [true, studentAttendance]
             } else {
@@ -143,10 +144,7 @@ class AttendanceClass {
     }
 
 
-
 }
-
-
 
 
 
@@ -223,7 +221,8 @@ class LecturerLocationClass {
 
     async findByLecturerIdAndCourseId(lecturerId, courseId) {
         try {
-            const locations = await LecturerLocation.find({ lecturerId, courseId });
+            // const locations = await LecturerLocation.find({ lecturerId, courseId });
+            const locations = await LecturerLocation.find({ lecturerId, courseId }, '-createdAt -updatedAt -lecturerId -__v ');
             if (locations) {
                 return [true, locations]
             } else {

@@ -8,10 +8,11 @@ const { StudentClass } = require('../services/studentService');
 const { UserClass } = require('../services/userService');
 const { logError } = require('../utils/logging');
 const { handleErrorResponse, handleSuccessResponse } = require('../utils/responseHandler');
-const { uploadStudentPicToCloudinary } = require('../utils/upload');
 
 
+/** FOR ADMINS/LECTURERS */
 
+// Add/Create a new course
 const createCourse = async (req, res) => {
 
     try {
@@ -53,6 +54,16 @@ const createCourse = async (req, res) => {
 
 }
 
+
+// Get all courses
+const getAllCourses = async (req, res) => {
+    // Instantiating the AdminClass() because the getAllCourses() method which queries our database is defined on that class
+    const courses = await new AdminClass().getAllCourses()
+    console.log("COurses -", courses);
+    handleSuccessResponse(res, "All Courses in the System", 200, { courses })
+}
+
+// Get all courses a lecturer is taking
 const getLecturerCourses = async (req, res) => {
 
     // const lecturerId = req.user.user_id;
@@ -71,18 +82,29 @@ const getLecturerCourses = async (req, res) => {
 
 }
 
-const getAllCourses = async (req, res) => {
-    // Instantiating the AdminClass() because the getAllCourses() method which queries our database is defined on that class
-    const courses = await new AdminClass().getAllCourses()
-    console.log("COurses -", courses);
-    handleSuccessResponse(res, "All Courses in the System", 200, { courses })
+
+// Lecturer view course with all attendance for students in that course and locations for that course.
+const lecturerViewCourse = async (req, res) => {
+    const { courseId } = req.params;
+    const lecturerId = req.user.user_id;
+
+    const courseObject = new CourseClass();
+    const attendanceObject = new AttendanceClass();
+    const lecturerObject = new LecturerLocationClass();
+    const lecturerCourseExists = await courseObject.getLecturerCourse(courseId, lecturerId);
+    console.log("LecturerCourseExists ", lecturerCourseExists)
+
+    if (lecturerCourseExists[0] == true) {
+        const lecturersCourseAttendance = await attendanceObject.getCourseAttendance(courseId);
+        console.log("LeCturers course attendance ", lecturersCourseAttendance);
+        const location = await lecturerObject.findByLecturerIdAndCourseId(lecturerId, courseId);
+        console.log("Location for lecturer ", location)
+
+        handleSuccessResponse(res, "Lecturers courses ", 200, { info: "Loop through the attendance array to get all the attendance for a particular student (using their student Matric no from the takenBy from the course object.)", course: lecturerCourseExists[1], attendance: lecturersCourseAttendance[1], locations: location[1] })
+    } else {
+        handleErrorResponse(res, "Lecturer does not teach that course.", 404)
+    }
 }
-
-// const coursesByLecturer = async (req, res) => {
-//     const { lecturerId } = req.params;
-//     let lecturer;
-
-// }
 
 // Edit Course details
 const editCourse = async (req, res) => {
@@ -94,7 +116,7 @@ const deleteCourse = async (req, res) => {
 
 }
 
-// To add a student to a course
+// Lecturer add a student to a course
 const addStudentToCourse = async (req, res) => {
 
     try {
@@ -110,8 +132,12 @@ const addStudentToCourse = async (req, res) => {
             const studentIndex = takenBy.findIndex((student) => student.studentMatricNo == studentMatricNo)
             console.log("The index ", studentIndex);
 
+            // If not lecturer is not the course lecturer
+            if (courseExists[1].taughtBy.lecturerId != lecturerId) {
+                return handleErrorResponse(res, "Not Course Lecturer. Unauthorized!", 401)
+            }
             // If Student has already been added
-            if (studentIndex > -1) {
+            else if (studentIndex > -1) {
                 return handleErrorResponse(res, "Student has already been added to course.", 400)
             } else {
 
@@ -148,16 +174,12 @@ const addStudentToCourse = async (req, res) => {
 
 }
 
-const setAttendanceTimeline = async (req, res) => {
-    const { courseId } = req.params;
+// Lecturer Edit Course details - To set the number of times a classes is going to be taught in a semester
+const lecturerEditCourse = async (req, res) => {
     const lecturerId = req.user.user_id;
-    const staffId = req.user.idNum;
-
-    const { canSubmitAttendance, longitude, latitude } = req.body;
-
-    const location = `${latitude}, ${longitude}`;       //Google's format for validation from their api
-    // console.log("Location -", location);
-    // console.log(canSubmitAttendance)
+    const { courseId } = req.params;
+    const { attendanceNum } = req.body;
+    console.log("Att num -", attendanceNum)
 
     const courseObject = new CourseClass()
     const courseExists = await courseObject.getCourseById(courseId);
@@ -165,48 +187,25 @@ const setAttendanceTimeline = async (req, res) => {
     if (courseExists[0] !== true) {
         return handleErrorResponse(res, "Course does not exist", 404)
     } else {
-
-        // If not lecturer
+        // If lecturer is not the one taking the course
         if (courseExists[1].taughtBy.lecturerId != lecturerId) {
-            return handleErrorResponse(res, "Not Course Lecturer. Unauthorized!", 401)
-        }
+            return handleErrorResponse(res, "Lecturer does not teach course. Not authorized!", 401)
+        } 
 
-        let updateEnableAttendance;
-
-        // Only capture lecturers location if attendance is set to open.
-        if (canSubmitAttendance == true || canSubmitAttendance == "true") {
-            // const { lecturerLocation } = courseExists[1];
-            // const newLocation = lecturerLocation.concat(location)
-            // console.log("New Location ", newLocation);
-
-            // Check if lecturer location is the same and has already been captured the same day
-
-            const newLocationObject = new LecturerLocationClass(lecturerId, staffId, courseId, courseExists[1].courseCode, location)
-            const newLocation = await newLocationObject.saveLocation()
-
-            console.log("NEW Location ", newLocation);
-
-            updateEnableAttendance = await courseObject.update(courseId, { canSubmitAttendance });
-
-
+        const updateAttNum = await courseObject.update(courseId, {attendanceNum})
+        console.log("Update att num ", updateAttNum)
+        if(updateAttNum[0] == true) {
+            handleSuccessResponse(res, "Attendance count number updated successfully", 200, {course: updateAttNum[1]})
         } else {
-            updateEnableAttendance = await courseObject.update(courseId, { canSubmitAttendance });
-
+            handleErrorResponse(res, "Failed to set attendance count number", 500)
         }
 
-        // console.log("UPdated ", updateEnableAttendance)
-        if (updateEnableAttendance[0] == true) {
-            if (canSubmitAttendance == true) {
-                return handleSuccessResponse(res, "Attendance opened/enabled.", 200, { course: updateEnableAttendance[1] })
-
-            } else {
-                return handleSuccessResponse(res, "Attendance closed/disabled.", 200, { course: updateEnableAttendance[1] })
-
-            }
-        } else {
-            return handleErrorResponse(res, "Failed to open or close attendance. Try again later", 500)
-        }
     }
+}
+
+// Lecturer Remove all students offering a course
+const lecturerRemoveAllStudents = async(req, res) => {
+
 }
 
 
@@ -241,17 +240,22 @@ const studentViewCourse = async (req, res) => {
     const studentId = req.user.user_id;
 
     const courseObject = new CourseClass()
-    const courseExists = await courseObject.getCourseById(courseId);
+    const attendanceObject = new AttendanceClass();
+    const studentCourseExists = await courseObject.getStudentSingleCourse(courseId, studentId);
 
-    if (courseExists[0] == true) {
-        // const studentCourse = await courseObject.getStudentSingleCourse(courseId, studentId);
-        // console.log("Student course -", studentCourse)
-        handleSuccessResponse(res, "Course found", 200, { course: courseExists[1] })
+    console.log("Student course -", studentCourseExists)
+
+    if (studentCourseExists[0] == true) {
+
+        const studentAttendance = await attendanceObject.getStudentCourseAttendance(courseId, studentId)
+        console.log("Get Student Attendance ", studentAttendance);
+        handleSuccessResponse(res, "Course found", 200, { course: studentCourseExists[1], attendance: studentAttendance[1], attendanceScore: studentAttendance[1].length })
 
     } else {
-        handleErrorResponse(res, "Course not found", 404)
+        handleErrorResponse(res, "Student does not take that course.", 404)
     }
 }
+
 
 const viewSingleCourse = async (req, res) => {
     const { courseId } = req.params;
@@ -260,6 +264,7 @@ const viewSingleCourse = async (req, res) => {
     const courseExists = await courseObject.getCourseById(courseId);
 
     if (courseExists[0] == true) {
+
         handleSuccessResponse(res, "Course found", 200, { course: courseExists[1] })
 
     } else {
@@ -267,76 +272,7 @@ const viewSingleCourse = async (req, res) => {
     }
 }
 
-const submitCourseAttendance = async (req, res) => {
 
-    try {
-
-        const studentId = req.user.user_id;
-        const studentMatricNo = req.user.idNum;
-
-        const { courseCode, latitude, longitude } = req.body;
-        const location = `${latitude}, ${longitude}`;
-
-        const courseObject = new CourseClass()  //New Course Class instance
-
-        const courseExists = await courseObject.getByCourseCode(courseCode);
-        const studentExists = await new StudentClass().getStudentByIdNum(studentMatricNo);
-
-        if (courseExists[0] !== true) {
-            return handleErrorResponse(res, "Course with course code does not exist", 404)
-        } else {
-
-            // If Attendance is closed - student not allowed to submit
-            if (courseExists[1].canSubmitAttendance == false) {
-                return handleErrorResponse(res, "Attendance has been closed", 401)
-            }
-
-            let filePath = req.file && req.file.path;
-            // If no picture uploaded
-            if (!filePath) {
-                return handleErrorResponse(res, "Failed to capture attendance because student picture not captured.", 400)
-            }
-
-            let studentCourseAttendance = await new AttendanceClass().getStudentCourseAttendance(courseExists[1]._id, studentId);
-            console.log("Student course attendance ", studentCourseAttendance )
-            studentCourseAttendance = studentCourseAttendance[1]
-            
-            const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => new Date(attendance.date) <= new Date(Date.now()) )
-            console.log(hasTakenAttendance)
-
-            if( hasTakenAttendance >= 0) {
-                return handleErrorResponse(res, "Student has already taken attendance", 400)
-            }
-
-            let uploadedPicture = await uploadStudentPicToCloudinary(filePath);
-            console.log("The uploaded student picture ", uploadedPicture);
-            uploadedPicture = uploadedPicture.url;
-
-            // If Student has never captured an attendance 
-
-            let studentName = `${studentExists[1].firstname} ${studentExists[1].lastname}`;
-            let studentPicture = uploadedPicture;
-
-            // const submitted = await courseObject.update(courseExists[1]._id, {attendance:fields});
-            const attendanceObject = new AttendanceClass(courseExists[1]._id, courseCode, studentId, studentName, studentMatricNo, studentPicture, location)
-            const submitted = await attendanceObject.submit()
-            
-            console.log("Submitted ", submitted);
-            if (submitted[0] == true) {
-                handleSuccessResponse(res, "Attendance has been captured successfully.", 200, { studentAttendance: submitted[1] })
-            } else {
-                return handleErrorResponse(res, "Failed to submit attendance", 400);
-            }
-
-        }
-
-
-    } catch (error) {
-        logError(error)
-        return handleErrorResponse(res, "Something went wrong, Failed to capture student's attendance - Internal server error", 500)
-    }
-
-}
 
 module.exports = {
     createCourse,
@@ -345,9 +281,11 @@ module.exports = {
     getAllCourses,
     getLecturerCourses,
     addStudentToCourse,
-    setAttendanceTimeline,
+    lecturerEditCourse,
     studentViewCourses,
     studentViewCourse,
     viewSingleCourse,
-    submitCourseAttendance
+    lecturerViewCourse,
+    lecturerRemoveAllStudents
+
 }

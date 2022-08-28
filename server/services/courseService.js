@@ -2,7 +2,7 @@ const Course = require("../model/course");
 const { translateError } = require("../utils/mongo_helper");
 
 class CourseClass {
-    constructor(taughtBy, courseTitle, courseCode, courseDepartment, takenBy, attendance, attendanceNum ) {
+    constructor(taughtBy, courseTitle, courseCode, courseDepartment, takenBy, attendance, attendanceNum) {
         this.taughtBy = taughtBy;
         this.courseTitle = courseTitle;
         this.courseCode = courseCode;
@@ -13,9 +13,9 @@ class CourseClass {
         this.attendanceNum = attendanceNum;
     }
 
-    
+
     // async addCourse(){
-    async add(){
+    async add() {
         try {
             let course = new Course({
                 taughtBy: this.taughtBy,
@@ -27,7 +27,7 @@ class CourseClass {
                 attendanceNum: this.attendanceNum
             })
 
-            if(await course.save()){
+            if (await course.save()) {
                 return [true, course]
             }
 
@@ -37,10 +37,10 @@ class CourseClass {
     }
 
     // async updateCourse(id, fields){
-    async update(id, fields){
+    async update(id, fields) {
         try {
-            const updatedCourse = await Course.findByIdAndUpdate(id, fields, {new: true});
-            if(updatedCourse) {
+            const updatedCourse = await Course.findByIdAndUpdate(id, fields, { new: true });
+            if (updatedCourse) {
                 return [true, updatedCourse]
             } else {
                 return [false, "Failed to update course - Course does not exist."]
@@ -54,12 +54,12 @@ class CourseClass {
     async delete(id) {
         try {
             const deletedCourse = await Course.findByIdAndDelete(id);
-            if(deletedCourse) {
+            if (deletedCourse) {
                 return [true, deletedCourse, "Course deleted successfully"];
             } else {
                 return [false, "Failed to delete course"]
             }
-            
+
         } catch (error) {
             return [false, translateError(error)]
         }
@@ -68,8 +68,8 @@ class CourseClass {
     async getCourseById(id) {
         try {
             const course = await Course.findById(id);
-            if(course){
-                return [ true, course]
+            if (course) {
+                return [true, course]
             } else {
                 return [false, "Course does not exist"]
             }
@@ -78,11 +78,11 @@ class CourseClass {
         }
     }
 
-    async getByCourseCode(courseCode){
-    // async getByCourseCode(){
-        const course = await Course.findOne({courseCode})
+    async getByCourseCode(courseCode) {
+        // async getByCourseCode(){
+        const course = await Course.findOne({ courseCode })
         // const course = await Course.findOne({courseCode:this.courseCode});
-        if(course) {
+        if (course) {
             return [true, course]
         } else {
             return [false, "Course not found"]
@@ -91,10 +91,10 @@ class CourseClass {
 
     async getCoursesByLecturer(lecturerId) {
         try {
-            const courses = await Course.find({ 'taughtBy.lecturerId' : lecturerId }, '-taughtBy');
+            const courses = await Course.find({ 'taughtBy.lecturerId': lecturerId }, '-taughtBy');
             // const courses = await Course.find({ 'taughtBy.lecturerId' : lecturerId });
-            return [ true, courses]
-            
+            return [true, courses]
+
         } catch (error) {
             return [false, translateError(error)]
         }
@@ -102,49 +102,70 @@ class CourseClass {
 
     async getCoursesByStudent(studentId) {
         try {
-        
-            const courses = await Course.find({'takenBy.studentId':studentId}, '-takenBy');
-            return [ true, courses]
-            
+
+            const courses = await Course.find({ 'takenBy.studentId': studentId }, '-takenBy');
+            return [true, courses]
+
         } catch (error) {
             return [false, translateError(error)]
         }
     }
 
-    // async getStudentSingleCourse(courseId, studentId) {
-    //     try {
-            
-    //         // const courses = await Course.findOne({})
-    //         const courses = await this.getCoursesByStudent(studentId);
-    //         console.log("STUD COURSES ", courses);
-    //         const singleCourse = await Course.findById(courseId);
-    //         console.log('SINGLE COURSe ', singleCourse)
-    //         if(singleCourse){
-    //             const studentCourse = courses[1].includes(singleCourse);
-    //             console.log("Student Course ", studentCourse);
-    //             if(studentCourse == true) {
-    //                 return [ true, singleCourse]
-    //             } else{
-    //                 return [false, "User not taking course"]
-    //             }
-    //         } else {
-    //             return [false, 'Course does not exist.']
-    //         }
-    //     } catch (error) {
-    //         return [false, translateError(error)]
-    //     }
-    // }
+    async getStudentSingleCourse(courseId, studentId) {
+        try {
 
-    // async getAllCourses() {
+            const studentCourse = await Course.findOne({ _id: courseId, 'takenBy.studentId': studentId }, '-takenBy');
+            console.log('Student single course ', studentCourse)
+            if (studentCourse) {
 
-    // }
+                return [true, studentCourse]
 
-    getEnrolledStudents(){
+            } else {
+                return [false, 'Course not offered by student (Student/Course not found).']
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    async getLecturerCourse(courseId, lecturerId) {
+        try {
+
+            const lecturerCourse = await Course.findOne({ _id: courseId, 'taughtBy.lecturerId': lecturerId }, '-taughtBy');
+            console.log('Lecturer single course ', lecturerCourse)
+            if (lecturerCourse) {
+                return [true, lecturerCourse]
+            } else {
+                return [false, 'Course not offered by student (Student/Course not found).']
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    async updateStudentSingleCourse(courseId, studentId, value) {
+        try {
+
+            const studentCourse = await Course.findOneAndUpdate({ _id: courseId, 'takenBy.studentId': studentId }, {"$set" : {'takenBy.$.incrementAttendanceScore': value}} , { new: true});
+            console.log('Updated Student single course ', studentCourse)
+            if (studentCourse) {
+
+                return [true, studentCourse]
+
+            } else {
+                return [false, 'Course not offered by student (Student/Course not found).']
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    getEnrolledStudents() {
         return `There are ${this.classNum} students enrolled`
     }
 
     static getDepartments() {
-        return [    
+        return [
             "Accounting",
             "Agricuture",
             "Agricuture in Agronomy and Landscape design",
@@ -184,11 +205,11 @@ class CourseClass {
             "Social Work and Human Services",
             "Software Engineering",
             "Zoology"
-            
-          ];
+
+        ];
     }
 
-    
+
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const { studentViewCourses, studentViewCourse, submitCourseAttendance } = require('../controllers/courseController');
+const { submitCourseAttendance } = require('../controllers/attendanceController');
+const { studentViewCourses, studentViewCourse } = require('../controllers/courseController');
 const { studentById, studentUpdatePassword } = require('../controllers/studentController');
 const { requireSignin, isStudent } = require('../middleware/auth');
 const { upload } = require('../utils/upload');
@@ -14,7 +15,7 @@ router.get('/student/:studentId', requireSignin, studentById)
 // To view student courses
 router.get('/student/view/courses', requireSignin, isStudent, studentViewCourses)
 
-// To view a particular course
+// To view a particular course - which also shows attendance for that particular course
 router.get('/student/view/course/:courseId', requireSignin, isStudent, studentViewCourse)
 
 // For students to submit attendance

@@ -181,6 +181,19 @@ const studentSubmitAttendanceValidator = [
 ]
 
 
+// Lecturer Edit/Set Attendance Num for semester
+const lecturerEditCourseValidator = [
+    check("attendanceNum", "Enter the number of times attendance is going to be taken for the semester.").notEmpty().isNumeric()
+
+]
+
+// Lecturer Edit Student attendance
+const editStudentAttendanceValidator = [
+    check("studentId", "Enter student id").trim().notEmpty(),
+    check("studentMatricNo", "Enter student matric number.").trim().notEmpty(),
+    check("incrementAttendanceScore", "Enter number of marks you want to add/remove from students attendance (incrementAttendanceScore e.g. +2 or -2)").notEmpty().isNumeric()
+]
+
 const validate = (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -211,5 +224,7 @@ module.exports = {
     addStudentToCourseValidator,
     setAttendanceTimelineValidator,
     studentSubmitAttendanceValidator,
+    lecturerEditCourseValidator,
+    editStudentAttendanceValidator,
     validate
 }
