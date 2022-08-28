@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { lecturerViewStudentAttendance, setAttendanceTimeline, editStudentAttendance } = require('../controllers/attendanceController');
-const { getLecturerCourses, addStudentToCourse, viewSingleCourse, lecturerViewCourse, lecturerEditCourse } = require('../controllers/courseController');
+const { getLecturerCourses, addStudentToCourse, lecturerViewCourse, lecturerEditCourse, removeStudentsFromCourse, removeStudentFromCourse } = require('../controllers/courseController');
 const { getLecturerById, lecturerUpdatePassword } = require('../controllers/lecturerController');
 const { requireSignin, isLecturer } = require('../middleware/auth');
 const { updatePasswordValidator, validate, addStudentToCourseValidator, setAttendanceTimelineValidator, lecturerEditCourseValidator, editStudentAttendanceValidator } = require('../validation.js');
@@ -29,13 +29,14 @@ router.put('/lecturer/editPassword/:lecturerId', requireSignin, isLecturer, upda
 // Allow student to submit attendance
 router.put('/lecturer/course/OpenAttendance/:courseId', requireSignin, isLecturer, setAttendanceTimelineValidator, validate, setAttendanceTimeline)
 
-
-
 // Lecturer edit student attendance for a particular course
 router.put('/lecturer/edit-attendance/:courseId', requireSignin, isLecturer, editStudentAttendanceValidator, validate, editStudentAttendance)
 
-// To remove students from a course (After semester is over)
-// router.put('/lecturer/students/remove-all/:courseId', requireSignin, isLecturer, removeAllStudents)
+// Remove student from a course
+router.put('/lecturer/remove/:courseId/student/:studentId', requireSignin, isLecturer, removeStudentFromCourse) 
+
+// To remove all students from a course (After semester is over)
+router.put('/lecturer/students/remove-all/:courseId', requireSignin, isLecturer, removeStudentsFromCourse)
 
 // Edit number of classes in a semester
 router.put('/lecturer/set-attendance-num/:courseId', requireSignin, isLecturer, lecturerEditCourseValidator, validate, lecturerEditCourse)

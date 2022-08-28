@@ -65,6 +65,7 @@ class CourseClass {
         }
     }
 
+    // Get a course by its id
     async getCourseById(id) {
         try {
             const course = await Course.findById(id);
@@ -78,6 +79,7 @@ class CourseClass {
         }
     }
 
+    // Get a course by its course code
     async getByCourseCode(courseCode) {
         // async getByCourseCode(){
         const course = await Course.findOne({ courseCode })
@@ -89,6 +91,7 @@ class CourseClass {
         }
     }
 
+    // Get all courses taken by a lecturer
     async getCoursesByLecturer(lecturerId) {
         try {
             const courses = await Course.find({ 'taughtBy.lecturerId': lecturerId }, '-taughtBy');
@@ -100,6 +103,7 @@ class CourseClass {
         }
     }
 
+    // Get all courses a particular student is taking
     async getCoursesByStudent(studentId) {
         try {
 
@@ -111,10 +115,11 @@ class CourseClass {
         }
     }
 
+    // Get a single course by a course id and student id
     async getStudentSingleCourse(courseId, studentId) {
         try {
 
-            const studentCourse = await Course.findOne({ _id: courseId, 'takenBy.studentId': studentId }, '-takenBy');
+            const studentCourse = await Course.findOne({ _id: courseId, 'takenBy.studentId': studentId });
             console.log('Student single course ', studentCourse)
             if (studentCourse) {
 
@@ -128,6 +133,7 @@ class CourseClass {
         }
     }
 
+    // Get a course by its id and lecturer
     async getLecturerCourse(courseId, lecturerId) {
         try {
 
@@ -143,7 +149,8 @@ class CourseClass {
         }
     }
 
-    async updateStudentSingleCourse(courseId, studentId, value) {
+    // Update the incrementAttendanceScore property
+    async updateIncAttScore(courseId, studentId, value) {
         try {
 
             const studentCourse = await Course.findOneAndUpdate({ _id: courseId, 'takenBy.studentId': studentId }, {"$set" : {'takenBy.$.incrementAttendanceScore': value}} , { new: true});
@@ -154,6 +161,53 @@ class CourseClass {
 
             } else {
                 return [false, 'Course not offered by student (Student/Course not found).']
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    // Set the student total attendance score 
+    async setStudentAttScore(courseId, studentId, value) {
+        try {
+
+            const studentCourse = await Course.findOneAndUpdate({ _id: courseId, 'takenBy.studentId': studentId }, {"$set" : {'takenBy.$.attendanceScore': value}} , { new: true});
+            console.log('Student total attendance score for single course ', studentCourse)
+            if (studentCourse) {
+
+                return [true, studentCourse]
+
+            } else {
+                return [false, 'Course not offered by student (Student/Course not found).']
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    // Remove student from a particular course
+    async removeStudent(courseId, studentId) {
+        try {
+            // Pull/Remove particular student from course
+            const course = await Course.findOneAndUpdate({_id:courseId, 'takenBy.studentId':studentId}, {"$pull": {'takenBy': {"studentId": studentId} }}, {new:true})
+            if(course) {
+                return [true, course]
+            } else{
+                return [false, "Course not offered."]
+            }
+        } catch (error) {
+            return [false, translateError(error)]
+        }
+    }
+
+    // Remove all students from a particular course
+    async removeStudents(courseId) {
+        try {
+            const course = await Course.findByIdAndUpdate(courseId, {"$set": {'takenBy': []}}, {new:true})
+            if(course) {
+                return [true, course]
+            } else{
+                return [false, "Course not offered."]
             }
         } catch (error) {
             return [false, translateError(error)]

@@ -120,6 +120,7 @@ const deleteCourse = async (req, res) => {
 const addStudentToCourse = async (req, res) => {
 
     try {
+        const lecturerId = req.user.user_id;
         const { courseCode, studentMatricNo } = req.body;
 
         const courseObject = new CourseClass()  //New Course Class instance
@@ -168,6 +169,7 @@ const addStudentToCourse = async (req, res) => {
             return handleErrorResponse(res, "Student with matric number/ Course code does not exist", 404)
         }
     } catch (error) {
+        // console.log("Error ", error)
         return handleErrorResponse(res, "Something went wrong - Internal server error. Please try again later", 500)
 
     }
@@ -190,12 +192,12 @@ const lecturerEditCourse = async (req, res) => {
         // If lecturer is not the one taking the course
         if (courseExists[1].taughtBy.lecturerId != lecturerId) {
             return handleErrorResponse(res, "Lecturer does not teach course. Not authorized!", 401)
-        } 
+        }
 
-        const updateAttNum = await courseObject.update(courseId, {attendanceNum})
+        const updateAttNum = await courseObject.update(courseId, { attendanceNum })
         console.log("Update att num ", updateAttNum)
-        if(updateAttNum[0] == true) {
-            handleSuccessResponse(res, "Attendance count number updated successfully", 200, {course: updateAttNum[1]})
+        if (updateAttNum[0] == true) {
+            handleSuccessResponse(res, "Attendance count number updated successfully", 200, { course: updateAttNum[1] })
         } else {
             handleErrorResponse(res, "Failed to set attendance count number", 500)
         }
@@ -203,9 +205,66 @@ const lecturerEditCourse = async (req, res) => {
     }
 }
 
-// Lecturer Remove all students offering a course
-const lecturerRemoveAllStudents = async(req, res) => {
+// Lecturer Remove a student  offering a course
+const removeStudentFromCourse = async (req, res) => {
+    const { courseId, studentId } = req.params;
+    const lecturerId = req.user.user_id;
 
+    const courseObject = new CourseClass()
+    const studentObject = new StudentClass();
+    const courseExists = await courseObject.getCourseById(courseId);
+    const studentExists = await studentObject.getById(studentId);
+
+
+    if (courseExists[0] !== true) {
+        return handleErrorResponse(res, "Course does not exist", 404)
+    } else if (studentExists[0] !== true) {
+        return handleErrorResponse(res, "Student does not exist", 404)
+    } else if (courseExists[0] !== true && studentExists[0] !== true) {
+        return handleErrorResponse(res, "Student and Course not found", 404)
+    }
+    else {
+        // If lecturer is not the one taking the course
+        if (courseExists[1].taughtBy.lecturerId != lecturerId) {
+            return handleErrorResponse(res, "Lecturer does not teach course. Not authorized!", 401)
+        }
+
+        const updateCourse = await courseObject.removeStudent(courseId, studentId);
+
+        if (updateCourse[0] == true) {
+            handleSuccessResponse(res, "Student has been removed from course successfully.", 200, { course: updateCourse[1] })
+        } else {
+            handleErrorResponse(res, "Failed to remove student from course ", 500)
+        }
+
+    }
+}
+
+// Lecturer Remove all students offering a course
+const removeStudentsFromCourse = async (req, res) => {
+    const { courseId } = req.params;
+    const lecturerId = req.user.user_id;
+
+    const courseObject = new CourseClass()
+    const courseExists = await courseObject.getCourseById(courseId);
+
+    if (courseExists[0] !== true) {
+        return handleErrorResponse(res, "Course does not exist", 404)
+    } else {
+        // If lecturer is not the one taking the course
+        if (courseExists[1].taughtBy.lecturerId != lecturerId) {
+            return handleErrorResponse(res, "Lecturer does not teach course. Not authorized!", 401)
+        }
+
+        const updateCourse = await courseObject.removeStudents(courseId);
+
+        if (updateCourse[0] == true) {
+            handleSuccessResponse(res, "Students have been removed from course successfully.", 200, { course: updateCourse[1] })
+        } else {
+            handleErrorResponse(res, "Failed to remove students from course ", 500)
+        }
+
+    }
 }
 
 
@@ -247,9 +306,23 @@ const studentViewCourse = async (req, res) => {
 
     if (studentCourseExists[0] == true) {
 
+        // Find the particular student that we are getting attendance for
+        const student = studentCourseExists[1].takenBy.find((obj) => obj.studentId == studentId);
+        // console.log("Student ", student);
+
         const studentAttendance = await attendanceObject.getStudentCourseAttendance(courseId, studentId)
         console.log("Get Student Attendance ", studentAttendance);
-        handleSuccessResponse(res, "Course found", 200, { course: studentCourseExists[1], attendance: studentAttendance[1], attendanceScore: studentAttendance[1].length })
+
+        // Student attendance score is his/her attendance length plus added score (set by lecturer)
+        const attendanceScore = studentAttendance[1].length + student.incrementAttendanceScore;
+        // Set/Update student total attendance score 
+        await courseObject.setStudentAttScore(courseId, studentId, attendanceScore)
+
+        // Assign the returned student course to a variable and skip the takenBy field(projecting) so we can return it.
+        let course = studentCourseExists[1];
+        course.takenBy = undefined;
+
+        handleSuccessResponse(res, "Course found", 200, { course, info: `Marked present/absent by lecturer for ${Math.abs(student.incrementAttendanceScore)} time(s)`, attendance: studentAttendance[1], attendanceScore })
 
     } else {
         handleErrorResponse(res, "Student does not take that course.", 404)
@@ -286,6 +359,7 @@ module.exports = {
     studentViewCourse,
     viewSingleCourse,
     lecturerViewCourse,
-    lecturerRemoveAllStudents
+    removeStudentFromCourse,
+    removeStudentsFromCourse
 
 }

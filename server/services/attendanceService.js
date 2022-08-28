@@ -222,7 +222,7 @@ class LecturerLocationClass {
     async findByLecturerIdAndCourseId(lecturerId, courseId) {
         try {
             // const locations = await LecturerLocation.find({ lecturerId, courseId });
-            const locations = await LecturerLocation.find({ lecturerId, courseId }, '-createdAt -updatedAt -lecturerId -__v ');
+            const locations = await LecturerLocation.find({ lecturerId, courseId }, '-createdAt -updatedAt -__v ');
             if (locations) {
                 return [true, locations]
             } else {

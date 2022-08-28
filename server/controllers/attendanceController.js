@@ -75,7 +75,6 @@ const submitCourseAttendance = async (req, res) => {
         const location = `${latitude}, ${longitude}`;
 
         const courseObject = new CourseClass()  //New Course Class instance
-
         const courseExists = await courseObject.getByCourseCode(courseCode);
         const studentExists = await new StudentClass().getStudentByIdNum(studentMatricNo);
 
@@ -88,8 +87,47 @@ const submitCourseAttendance = async (req, res) => {
                 return handleErrorResponse(res, "Attendance has been closed", 401)
             }
 
-            // If Student's location isn't close to lecturer
+            // If Student's location isn't close to lecturer, don't allow them to submit.
+            const { lecturerId } = courseExists[1].taughtBy;
+            const lecturerLocationObject = new LecturerLocationClass();
+            let lecturerCourseLocations = await lecturerLocationObject.findByLecturerIdAndCourseId(lecturerId, courseExists[1]._id)
+            // console.log("Lecturer Course locations ", lecturerCourseLocations);
+            lecturerCourseLocations = lecturerCourseLocations[1];
 
+            // The last document in the lecturer location with the specified lecturer id and courseId
+            const recentLecturerLocation = lecturerCourseLocations[lecturerCourseLocations.length - 1]
+            console.log("The most recent lecturer location ", recentLecturerLocation);
+
+            if (recentLecturerLocation) {
+                let lecturerLoc = recentLecturerLocation.location;
+                let lecturerLocArr = lecturerLoc.split(",").map(elem => Number(elem));  //Convert to number
+                console.log("The Lecturer location array ", lecturerLocArr);
+
+                let studentLocArr = location.split(",").map(elem => Number(elem));
+                console.log("The Student location array ", studentLocArr);
+
+                // Convert coordinates to 7dp
+                let lecturerLocLat = lecturerLocArr[0].toFixed(7);
+                let lecturerLocLong = lecturerLocArr[1].toFixed(7);
+                let studentLocLat = studentLocArr[0].toFixed(7);
+                let studentLocLong = studentLocArr[1].toFixed(7);
+
+
+                let latDifference = Math.abs(lecturerLocLat - studentLocLat);
+                let longDifference = Math.abs(lecturerLocLong - studentLocLong);
+
+                console.log("Latitude difference in location", latDifference);
+                console.log("Longitude difference in location", longDifference);
+
+                let range = 0.001;
+                range = range.toFixed(7);
+
+                // If difference in location is more than range then student is not close to lecturer
+                if (latDifference > range || longDifference > range) {
+                    return handleErrorResponse(res, "Failed to sign attendance - Student distance is too far from lecturer location", 403)
+                }
+
+            }
 
             // File path which holds the students picture
             let filePath = req.file && req.file.path;
@@ -114,6 +152,8 @@ const submitCourseAttendance = async (req, res) => {
                 return handleErrorResponse(res, "Student has already taken attendance", 400)
             }
 
+            // Testing - with localhost
+            // let uploadedPicture = filePath;
             let uploadedPicture = await uploadStudentPicToCloudinary(filePath);
             console.log("The uploaded student picture ", uploadedPicture);
             uploadedPicture = uploadedPicture.url;
@@ -171,9 +211,17 @@ const lecturerViewStudentAttendance = async (req, res) => {
 
         // Student attendance score is his/her attendance length plus added score (set by lecturer)
         const attendanceScore = studentAttendance[1].length + student.incrementAttendanceScore;
+        // Set/Update student total attendance score 
+        await courseObject.setStudentAttScore(courseId, studentId, attendanceScore)
+
+        // Assign the returned course document to a variable and skip the taken by property
+        let course = courseExists[1];
+        course.takenBy = undefined;
+        course.taughtBy = undefined;
+
 
         if (studentAttendance[0] == true) {
-            handleSuccessResponse(res, "Student attendance for course found.", 200, { course: courseExists[1], attendance: studentAttendance[1], attendanceScore })
+            handleSuccessResponse(res, `Student ${studentExists[1].firstname} ${studentExists[1].lastname} attendance for ${courseExists[1].courseCode}.`, 200, { info: `Marked present/absent for ${Math.abs(student.incrementAttendanceScore)} time(s)`, course: courseExists[1], attendance: studentAttendance[1], attendanceScore })
 
         } else {
             return handleErrorResponse(res, "Failed to get attendance ", 400)
@@ -184,7 +232,7 @@ const lecturerViewStudentAttendance = async (req, res) => {
 }
 
 const editStudentAttendance = async (req, res) => {
-  
+
     const { courseId } = req.params;
     const { studentId, studentMatricNo, incrementAttendanceScore } = req.body;
 
@@ -195,18 +243,36 @@ const editStudentAttendance = async (req, res) => {
     console.log("Course exists ", courseExists)
     const studentExists = await studentObject.getById(studentId)
     const studentAttendance = await attendanceObject.getStudentCourseAttendance(courseId, studentId)
+    // console.log("The student attendance ", studentAttendance)
 
     //If Course does not exist.
     if (courseExists[0] !== true) {
         return handleErrorResponse(res, "Course does not exist", 404)
-    } else if(studentExists[0] !== true) {
+    } else if (studentExists[0] !== true) {
         return handleErrorResponse(res, "Student does not exist", 404)
     } else {
-        const updateScore = await courseObject.updateStudentSingleCourse(courseId, studentId, incrementAttendanceScore)
-        console.log("Update students attendance ", updateScore);
+        const oldAttendanceScore = studentAttendance[1].length;
 
-        if(updateScore[0] == true) {
-            handleSuccessResponse(res, "Updated attendance successfully. ", 200, {attendance: updateScore[1]})
+        // If lecturer tries to mark student absent beyond their present attendance score don't allow
+        if (incrementAttendanceScore < 0 && incrementAttendanceScore + oldAttendanceScore < 0) {
+            return handleErrorResponse(res, `Can not mark student absent for ${Math.abs(incrementAttendanceScore)} times. Student can not be present for less than 0 times`, 403)
+        }
+
+        const updateScore = await courseObject.updateIncAttScore(courseId, studentId, incrementAttendanceScore)
+        console.log("Update students increment attendance score ", updateScore);
+
+        if (updateScore[0] == true) {
+
+            let attendanceScore = oldAttendanceScore + incrementAttendanceScore;
+
+            // Set/Update student total attendance score 
+            await courseObject.setStudentAttScore(courseId, studentId, attendanceScore)
+
+            if (incrementAttendanceScore < 0) {
+                return handleSuccessResponse(res, `Updated ${studentExists[1].firstname} ${studentExists[1].lastname} attendance successfully.`, 200, { info: `Marked absent for ${Math.abs(incrementAttendanceScore)} time(s)`, oldAttendanceScore, newAttendanceScore: attendanceScore })
+            } else {
+                return handleSuccessResponse(res, `Updated ${studentExists[1].firstname} ${studentExists[1].lastname} attendance successfully.`, 200, { info: `Marked present for ${Math.abs(incrementAttendanceScore)} more time(s)`, oldAttendanceScore, newAttendanceScore: attendanceScore })
+            }
         } else {
             return handleErrorResponse(res, "Failed to update student's attendance", 500)
         }

@@ -61,7 +61,8 @@ const CourseSchema = new Schema({
         default: 0,
       },
       attendanceScore: {    //student total attendance score
-        type: Number
+        type: Number,
+        min: [0, "Student's total attendance score can not be less than 0"],
       },
       _id: false,
     },
