@@ -20,7 +20,7 @@ router.get('/student/view/course/:courseId', requireSignin, isStudent, studentVi
 
 // For students to submit attendance
 // Upload middleware function from multer helps us parse our form req body which is a multipart/form
-router.post('/student/course/submitAttendance', requireSignin, isStudent, upload.single('studentPicture'), studentSubmitAttendanceValidator, validate, submitCourseAttendance )
+router.post('/student/course/submitAttendance', requireSignin, isStudent, upload.single('picture'), studentSubmitAttendanceValidator, validate, submitCourseAttendance )
 
 router.put('/student/editPassword/:studentId', requireSignin, isStudent, updatePasswordValidator, validate, studentUpdatePassword )
 

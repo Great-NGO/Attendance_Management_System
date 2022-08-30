@@ -54,6 +54,9 @@ class UserClass{
             
         } else {
             if(role == "admin" || role == "lecturer" || role == "student") {
+                if(role == "student") {
+                    return [false, `${role.charAt(0).toUpperCase()+role.slice(1)} with matric number does not exist` ]
+                }
                 return [false, `${role.charAt(0).toUpperCase()+role.slice(1)} with Id number does not exist` ]
             } else {
                 return [false, "User with Id and role does not exist."]

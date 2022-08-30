@@ -13,7 +13,7 @@ const lecturerOrStudentLogin = async (req, res) => {
         console.log(req.body)
         console.log(idNum && password && role)
         if (!(idNum && password && role)) {
-            return handleErrorResponse(res, "Please enter id number, password and role.", 400)
+            return handleErrorResponse(res, "Please enter id number, password and select role.", 400)
         } else {
 
             const user = new UserClass(idNum, '', '', '', password, role)

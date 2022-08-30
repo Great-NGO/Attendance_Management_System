@@ -68,10 +68,12 @@ const submitCourseAttendance = async (req, res) => {
 
     try {
 
+        console.log("The request body ", req.body, "The request file", req.body.file);
+
         const studentId = req.user.user_id;
         const studentMatricNo = req.user.idNum;
 
-        const { courseCode, latitude, longitude } = req.body;
+        const { courseCode, latitude, longitude, picture } = req.body;
         const location = `${latitude}, ${longitude}`;
 
         const courseObject = new CourseClass()  //New Course Class instance
@@ -131,8 +133,8 @@ const submitCourseAttendance = async (req, res) => {
 
             // File path which holds the students picture
             let filePath = req.file && req.file.path;
-            // If no picture uploaded
-            if (!filePath) {
+            // If no picture uploaded from the filePath or from the request body
+            if (!filePath && !picture) {
                 return handleErrorResponse(res, "Failed to capture attendance because student picture not captured.", 400)
             }
 
@@ -144,7 +146,8 @@ const submitCourseAttendance = async (req, res) => {
             // const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => new Date(attendance.date) < new Date(Date.now()))
 
             // Return the index of a students attendance object in the students attendance array where the date submitted is less than 24 hours
-            const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => ((Math.abs(new Date(Date.now()).getTime() - new Date(attendance.date).getTime())) / (60 * 60 * 1000)) < 24)
+            // const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => ((Math.abs(new Date(Date.now()).getTime() - new Date(attendance.date).getTime())) / (60 * 60 * 1000)) < 24)
+            const hasTakenAttendance = studentCourseAttendance.findIndex((attendance) => ((Math.abs(new Date(Date.now()).getTime() - new Date(attendance.date).getTime())) / (60 * 60 * 1000)) < 12)        //Less than 12 hours
             console.log("Has taken attendance", hasTakenAttendance)
 
             // If Student has submitted attendance for the day.
@@ -153,8 +156,9 @@ const submitCourseAttendance = async (req, res) => {
             }
 
             // Testing - with localhost
-            // let uploadedPicture = filePath;
-            let uploadedPicture = await uploadStudentPicToCloudinary(filePath);
+            // let uploadedPicture = filePath; // let uploadedPicture = req.body.picture;
+            // let uploadedPicture = await uploadStudentPicToCloudinary(filePath);  //If using image from file
+            let uploadedPicture = await uploadStudentPicToCloudinary(picture);
             console.log("The uploaded student picture ", uploadedPicture);
             uploadedPicture = uploadedPicture.url;
 
@@ -174,6 +178,7 @@ const submitCourseAttendance = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error)
         logError(error)
         return handleErrorResponse(res, "Something went wrong, Failed to capture student's attendance - Internal server error", 500)
     }
