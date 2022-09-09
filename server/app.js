@@ -12,7 +12,8 @@ const { log, logError } = require("./utils/logging");
 const { handleErrorResponse } = require("./utils/responseHandler");
 
 const corsOption = {
-  origin: ["*", "http://localhost:3000", "http://localhost:5500"],
+  // origin: ["*", "http://localhost:3000", "http://localhost:5500", "https://buattendancemanagementsystem.herokuapp.com"],
+  origin: ["http://localhost:3000", "http://localhost:5500", "https://buattendancemanagementsystem.herokuapp.com"],
   credentials: true,
   optionSuccessStatus: 200,
   methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
