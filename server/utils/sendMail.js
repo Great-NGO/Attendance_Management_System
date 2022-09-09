@@ -91,11 +91,11 @@ const sendResetPwdMail = async (email, fullName, id, role) => {
     let url2;
 
     if (process.env.NODE_ENV === "production") {
-      url1 = `https://buattendancemanagementsystem.herokuapp.com/resetPassword/${id}`;
-      url2 = `https://buattendancemanagementsystem.herokuapp.com/admin/resetPassword/${id}`;
+      url1 = `https://buattendancemanagementsystem.herokuapp.com/reset-password.html?id=${id}`;
+      url2 = `https://buattendancemanagementsystem.herokuapp.com/admin/reset-password?id=${id}`;
     } else {
-      url1 = `http://localhost:4000/resetPassword/${id}`;
-      url2 = `http://localhost:4000/admin/resetPassword/${id}`;
+      url1 = `http://localhost:4000/reset-password.html?id=${id}`;
+      url2 = `http://localhost:4000/admin/reset-password.html?id=${id}`;
     }
 
     const transporter = nodemailer.createTransport({

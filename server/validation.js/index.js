@@ -112,7 +112,8 @@ const updatePasswordValidator = [
 ]
 
 const forgotPasswordValidator = [
-    check("email", "Email is required").notEmpty().isEmail(),
+    check("email", "Please enter your email").notEmpty(),
+    check("email", "Please enter a valid email address").isEmail(),
     check("role", "Select your role - 'student' or 'lecturer'.").notEmpty().matches(/^(lecturer|student)$/)
 
 ]
