@@ -152,7 +152,7 @@ const submitCourseAttendance = async (req, res) => {
 
             // If Student has submitted attendance for the day.
             if (hasTakenAttendance >= 0) {
-                return handleErrorResponse(res, "Student has already taken attendance", 400)
+                return handleErrorResponse(res, "Student has already taken attendance", 403)
             }
 
             // Testing - with localhost
@@ -172,7 +172,7 @@ const submitCourseAttendance = async (req, res) => {
             if (submitted[0] == true) {
                 handleSuccessResponse(res, "Attendance has been captured successfully.", 200, { studentAttendance: submitted[1] })
             } else {
-                return handleErrorResponse(res, "Failed to submit attendance", 400);
+                return handleErrorResponse(res, "Failed to submit attendance", 500);
             }
 
         }

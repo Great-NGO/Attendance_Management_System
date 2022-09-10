@@ -33,7 +33,7 @@ let next = document.querySelector("button.btn2.submitAttendanceBtn");
 next.addEventListener("click", (evt) => {
   // Using Canvas - canvas.toDataURL("type/format", "quality - no between 0 and 1")
   let studentPicture = canvas.toDataURL("image/jpeg", 0.5);
-  console.log("Canvas - Student picture ", studentPicture);
+  // console.log("Canvas - Student picture ", studentPicture);
 
   let form = new FormData();
   form.append("courseCode", "Test101");
@@ -70,6 +70,14 @@ next.addEventListener("click", (evt) => {
         }
       } else {
         alert("Attendance capture successfully.");
+        window.location.replace("/capture-successful-page.html") //Redirect student to attendance capture successful page if attendance was sucessfully captured
+        
+        // Would get the specific attendance id and would append that to the capture-successful-page 
+
+        // OR
+        //Could show a pop-up modal with a link to go back to the home page
+
+        
         // document.getElementById('anchor').setAttribute("href","CapturePage.html");
       }
     })

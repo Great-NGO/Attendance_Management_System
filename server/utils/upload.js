@@ -29,17 +29,41 @@ var upload = multer({
 
 });
 
-async function uploadStudentPicToCloudinary(localFilePath) {
+// async function uploadStudentPicToCloudinary(localFilePath) {
 
-    console.log(localFilePath);
-    // filePathOnCloudinary:
+//     console.log(localFilePath);
+//     // filePathOnCloudinary:
+//     //path of image we want when it is uploaded to cloudinary
+//     return cloudinary.uploader.upload(localFilePath, { folder: 'main' })
+//         .then((result) => {
+//             //Image has been successfully uploaded on cloudinary so we dont need local image file anymore
+//             // Remove file from local uploads folder
+//             // fs.unlinkSync(localFilePath)
+
+//             return {
+//                 message: "Success, Profile Picture uploaded",
+//                 url: result.secure_url,
+//                 details: result,
+//                 publicId: result.public_id
+
+//             };
+//         })
+//         .catch((error) => {
+//             //Remove file from local uploads or api/uploads folder
+//             // fs.unlinkSync(localFilePath)
+//             console.log(error);
+//             return { message: "Fail", error: error };
+//         });
+// }
+
+async function uploadStudentPicToCloudinary(imageString) {
+
+    console.log(imageString);
+  
     //path of image we want when it is uploaded to cloudinary
-    return cloudinary.uploader.upload(localFilePath, { folder: 'main' })
+    return cloudinary.uploader.upload(imageString, { folder: 'main' })
         .then((result) => {
-            //Image has been successfully uploaded on cloudinary so we dont need local image file anymore
-            // Remove file from local uploads folder
-            fs.unlinkSync(localFilePath)
-
+            //Image has been successfully uploaded on cloudinary 
             return {
                 message: "Success, Profile Picture uploaded",
                 url: result.secure_url,
@@ -49,8 +73,7 @@ async function uploadStudentPicToCloudinary(localFilePath) {
             };
         })
         .catch((error) => {
-            //Remove file from local uploads or api/uploads folder
-            fs.unlinkSync(localFilePath)
+            // Something occurred
             console.log(error);
             return { message: "Fail", error: error };
         });

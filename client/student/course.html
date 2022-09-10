@@ -1,3 +1,10 @@
+<!-- Course Page... Please Rework course page -->
+
+<!-- This Page shows Course information - Course name, code, lecturer, department and number of times attendance for the course is going to
+be taken per semester -->
+
+<!-- This page also shows the students attendance score for that particular semester and a link to the students attendance history. -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
 
-    <title>AMS</title>
+    <title>Student Course</title>
 </head>
 <body>
     <main id="student-course-view">
@@ -14,18 +21,19 @@
             <!-- <div id="logo">AMS<span class="purple">.</span></div> -->
             <ul id="views">
                     <li><a href="#" tabindex="-1"><button class="highlighted">attendance</button></a></li>
-                    <li><a tabindex="-1" href="student-course-attendance.html"><button>history</button></a></li>
+                    <li><a tabindex="-1" href="attendance-history.html"><button>history</button></a></li>
             </ul>
         </nav>
         <div id="title-wrapper">
             <header id="title-card">
-                <p id="course-title"></p>
-                <p id="course-code"></p>
-                <p id="lecturer"></p>
+                <p id="course-title"> Course Title: </p>
+                <p id="course-code"> Course code: </p>
+                <p id="course-department"> Course Department: </p>
+                <p id="lecturer"> Lecturer: </p>
             </header>
         </div>
         <section id="attendance-view">
-            <a href="#" tabindex="-1" >
+            <a href="capture-attendance.html" tabindex="-1" >
                 <button>
                     <img src="../assets/tap.svg" alt="this image could not load">
                     <p>clock in</p>
@@ -35,17 +43,21 @@
                 <section>
                     <p>attendance overview</p>
                     <section id="overview">
+                        <!-- Would only show the info property of how many times the student has been marked absent/present and the students attendance score -->
                         <div id="total">
                             <h1>0</h1>
-                            <p>Total Days</p>
+                            <!-- <p>Total Days</p> -->
+                            <p>Total Attendance Score</p>
                         </div>
                         <div id="present">
                             <h1>0</h1>
-                            <p>Present</p>
+                            <!-- <p>Present</p> -->
+                            <p>Marked Present/Absent by lecturer</p>
                         </div>
                         <div id="absent">
                             <h1>0</h1>
-                            <p>Absent</p>
+                            <!-- <p>Absent</p> -->
+                            <p>Course Attendance number for semester</p>
                         </div>                        
                     </section>
                 </section>
@@ -55,6 +67,6 @@
             <img src="../assets/darkmode-toggle.svg" alt="image could not load">
         </button>
     </main>
-        <script src="/js/darkmode.js"></script>
+        <script src="js/darkmode.js"></script>
 </body>
 </html>
